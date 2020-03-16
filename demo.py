@@ -1,8 +1,11 @@
 import radiate
 import numpy as np
-import cv2
+import os
 
-folder_path = '/media/marcel/df5725dc-6216-424d-842c-30fff5c71c5d/Dropbox/RES_EPS_PathCad/datasets/radiate/city_3_2'
+ROOT_PATH = 'path/to/dataset/root/'
+sequence_name = 'city_3_2'
+
+folder_path = os.path.join(ROOT_PATH, sequence_name)
 
 seq = radiate.Sequence(folder_path)
 
