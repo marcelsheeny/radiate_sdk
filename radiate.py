@@ -17,6 +17,7 @@ class Sequence:
     | >>> root_path = 'path/to/radiate/city_3_7/'
     | >>> seq = radiate.Sequence(root_path)
     | >>> output = seq.get_from_timestamp(seq.init_timestamp)
+    | >>> seq.vis_all(output)
     """
 
     def __init__(self, sequence_path, config_file='config/config.yaml'):
