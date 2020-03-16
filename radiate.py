@@ -33,7 +33,7 @@ class Sequence:
                        }
 
         self.heights = {'car': 1.5,
-                        'bus': 5,
+                        'bus': 3,
                         'truck': 2.5,
                         'pedestrian': 1.8,
                         'van': 2,
@@ -95,7 +95,6 @@ class Sequence:
                                lidar_points[i, 1]*lidar_points[i, 1] +
                                lidar_points[i, 2]*lidar_points[i, 2])
                         norm_dist = np.array([(dist/self.config['lidar_proj']['max_dist'])*255]).astype(np.uint8)
-                        # cc = cv2.applyColorMap(norm_dist,cv2.COLORMAP_JET)
                         cc = np.array(plt.get_cmap('viridis')(norm_dist))*255
                         im_lidar = cv2.circle(
                             im_lidar, (xx, yy), 1, color=cc.tolist()[0][:3][::-1])
@@ -103,7 +102,7 @@ class Sequence:
                         dist = np.sqrt(lidar_points[i, 0]*lidar_points[i, 0] +
                                lidar_points[i, 1]*lidar_points[i, 1] +
                                lidar_points[i, 2]*lidar_points[i, 2])
-                        im_lidar[yy,xx] = distance
+                        im_lidar[yy,xx] = dist
 
         return im_lidar
 
@@ -299,7 +298,6 @@ class Sequence:
         M[3,0] = M[3,0] / cell_res_x
         M[3,1] = M[3,1] / cell_res_y
         lidar_annotations = self.transform_annotations(lidar_annotations, M)                
-        # annotations['lidar_image'] = lidar_annotations
         return lidar_annotations
 
     def get_rectfied(self, left_im, right_im):
