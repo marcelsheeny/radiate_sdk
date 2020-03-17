@@ -53,7 +53,7 @@ radar_calib:
     range_cells: 576
     azimuth_cells: 400
 
-calif_file: 'config/default-calib.yaml'
+calib_file: 'config/default-calib.yaml'
 
 
     
