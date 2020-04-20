@@ -6,17 +6,17 @@ camera_timestamp_file: 'zed_left.txt'
 # whether to use or not some sensors
 use_camera_left_raw: False
 use_camera_right_raw: False
-use_camera_left_rect: True
+use_camera_left_rect: False
 use_camera_right_rect: True
 use_radar_polar: False
 use_radar_cartesian: True
 use_lidar_pc: False
-use_lidar_image: True
-use_proj_lidar_left: True
+use_lidar_bev_image: True
+use_proj_lidar_left: False
 use_proj_lidar_right: True
 
 # whether to interpolate bounding boxes or not
-interpolate_bboxes: True
+interpolate_bboxes: False
 
 # sensors height for projecting 2d BEV to 3D
 sensors_height: -1.8
@@ -31,7 +31,7 @@ lidar_proj:
 
 
 # width and height resolution of a bird's eye view lidar image
-lidar_image:
+lidar_bev_image:
     res: [1152, 1152]
     remove_ground: True
     ground_thresh: 1.5
@@ -40,8 +40,8 @@ lidar_image:
 
 # time synchronisation between sensors in seconds
 sync:
-    lidar: 1.0
-    camera: 1.0
+    lidar: 0.25
+    camera: 0.25
     radar: 0.0
 
 

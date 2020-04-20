@@ -56,10 +56,11 @@ class Sequence:
                        'van': (1.0, 0.3, 0.0),
                        'group_of_pedestrians': (1.0, 1.0, 0.3),
                        'motorbike': (0.0, 1.0, 1.0),
-                       'bicycle': (0.3, 1.0, 1.0)
+                       'bicycle': (0.3, 1.0, 1.0),
+                       'vehicle' : (1.0, 0.0, 0.0)
                        }
 
-        # averange object height
+        # average object height
         self.heights = {'car': 1.5,
                         'bus': 3,
                         'truck': 2.5,
@@ -67,7 +68,8 @@ class Sequence:
                         'van': 2,
                         'group_of_pedestrians': 1.8,
                         'motorbike': 1.5,
-                        'bicycle': 1.5
+                        'bicycle': 1.5,
+                        'vehicle' : 1.5
                         }
     
         # load timestamps
@@ -185,9 +187,10 @@ class Sequence:
         :return: returns a single variable as a dictorionary with 'sensors' and 'annotations' as key
         :rtype: dict
         """
-        id_camera = self.get_id(t, self.timestamp_camera, self.config['sync']['camera'])
-        id_lidar = self.get_id(t, self.timestamp_lidar, self.config['sync']['lidar'])
-        id_radar = self.get_id(t, self.timestamp_radar, self.config['sync']['radar'])
+        id_camera, ts_camera = self.get_id(t, self.timestamp_camera, self.config['sync']['camera'])
+        id_lidar, ts_lidar = self.get_id(t, self.timestamp_lidar, self.config['sync']['lidar'])
+        id_radar, ts_radar = self.get_id(t, self.timestamp_radar, self.config['sync']['radar'])
+        t2 = self.timestamp_radar['time'][id_radar + 1]
         output = {}
         if get_sensors :
             str_format = '{:06d}'
@@ -217,7 +220,7 @@ class Sequence:
                 im_left_rect, im_right_rect, disp_to_depth = self.get_rectfied(im_left, im_right)
 
             if (self.config['use_lidar_pc'] or
-                self.config['use_lidar_image'] or
+                self.config['use_lidar_bev_image'] or
                 self.config['use_proj_lidar_left'] or
                 self.config['use_proj_lidar_right']):
                 lidar = self.read_lidar(lidar_path)
@@ -242,8 +245,8 @@ class Sequence:
             if (self.config['use_lidar_pc']):
                 sensors['lidar_pc'] = lidar
 
-            if (self.config['use_lidar_image']):
-                sensors['lidar_image'] = self.lidar_to_image(lidar)
+            if (self.config['use_lidar_bev_image']):
+                sensors['lidar_bev_image'] = self.lidar_to_image(lidar)
 
             if (self.config['use_proj_lidar_left']):
                 proj_lidar_left = self.project_lidar(lidar, self.calib.LidarToLeft, self.calib.left_cam_mat,
@@ -267,23 +270,25 @@ class Sequence:
                     radar_annotations = self.get_annotation_from_id(radar_annotation_id)                
                     annotations['radar_cartesian'] = radar_annotations
 
-                if self.config['use_lidar_image']:
-                    annotations['lidar_image'] = self.get_lidar_annotations(id_radar)
+                if self.config['use_lidar_bev_image']:
+                    annotations['lidar_bev_image'] = self.get_lidar_annotations(id_radar, self.config['interpolate_bboxes'], t, ts_radar, t2)
+                        #  t_c=None, t_r1=None, t_r2=None)
 
                 if self.config['use_camera_left_rect']:
-                    annotations['lidar_image'] = self.get_lidar_annotations(id_radar)
-                    bboxes_3d = self.project_bboxes_to_camera(annotations['lidar_image'],
+                    annotations['lidar_bev_image'] = self.get_lidar_annotations(id_radar, self.config['interpolate_bboxes'], t, ts_radar, t2)
+                    bboxes_3d = self.project_bboxes_to_camera(annotations['lidar_bev_image'],
                                              self.calib.left_cam_mat,
                                              self.calib.RadarToLeft)
                     annotations['camera_left_rect'] = bboxes_3d
-                    
+                    # t_c=None, t_r1=None, t_r2=None)
 
                 if self.config['use_camera_right_rect']:
-                    annotations['lidar_image'] = self.get_lidar_annotations(id_radar)
-                    bboxes_3d = self.project_bboxes_to_camera(annotations['lidar_image'],
+                    annotations['lidar_bev_image'] = self.get_lidar_annotations(id_radar, self.config['interpolate_bboxes'], t, ts_radar, t2)
+                    bboxes_3d = self.project_bboxes_to_camera(annotations['lidar_bev_image'],
                                              self.calib.right_cam_mat,
                                              self.calib.RadarToRight)
                     annotations['camera_right_rect'] = bboxes_3d
+                    # t_c=None, t_r1=None, t_r2=None)
 
             output['annotations'] = annotations
        
@@ -299,10 +304,10 @@ class Sequence:
         """
 
         if self.config['use_camera_left_raw']:
-            cv2.imshow('camera left raw', output['camera_left_raw'])
+            cv2.imshow('camera left raw', output['sensors']['camera_left_raw'])
 
         if self.config['use_camera_right_raw']:
-            cv2.imshow('camera right raw', output['camera_right_raw'])
+            cv2.imshow('camera right raw', output['sensors']['camera_right_raw'])
 
         if self.config['use_camera_left_rect']:
             left_bb = self.vis_3d_bbox_cam(output['sensors']['camera_left_rect'], output['annotations']['camera_left_rect'])
@@ -319,8 +324,8 @@ class Sequence:
         if self.config['use_radar_polar']:
             cv2.imshow('radar', output['sensors']['radar_polar'])
 
-        if (self.config['use_lidar_image']):
-            lidar_vis = self.vis(output['sensors']['lidar_image'], output['annotations']['lidar_image'])
+        if (self.config['use_lidar_bev_image']):
+            lidar_vis = self.vis(output['sensors']['lidar_bev_image'], output['annotations']['lidar_bev_image'])
             cv2.imshow('lidar image', lidar_vis)
         
         if (self.config['use_lidar_pc']):
@@ -358,7 +363,7 @@ class Sequence:
             obj = {}
             class_name = object['class_name']
             obj['class_name'] = class_name
-            obj['id'] = object['id']
+            obj['id'] = (object['id'] if 'id' in object.keys() else 0)
             height = self.heights[class_name]
             bb = object['bbox']['position']
             rotation = object['bbox']['rotation']
@@ -368,41 +373,91 @@ class Sequence:
 
         return bboxes_3d
 
-    def vis_3d_bbox_cam(self, image, bboxes_3d):
+    def vis_3d_bbox_cam(self, image, bboxes_3d, pc_size=1.0):
         """diplay pseudo 3d bounding box from camera
         
         :param image: camera which the bounding box is going to be projected
         :type image: np.array
         :param bboxes_3d: list of bounding box information with pseudo-3d image coordinate frame
         :type bboxes_3d: dict
+        :param pc_size: percentage of the size of the bounding box [0.0 1.0]
+        :type pc_size: float
         :return: camera image with the correspondent bounding boxes
         :rtype: np.array
         """
         vis_im = np.copy(image)
         for obj in bboxes_3d:
-            # bbox_3d = obj['bbox_3d']
-            for ii in range(len(obj['bbox_3d'])):
+            bbox_3d = obj['bbox_3d']
+            for ii in range(len(bbox_3d)):
                 color = self.colors[obj['class_name']]
-                vis_im = cv2.line(vis_im, (obj['bbox_3d'][ii - 1][0], obj['bbox_3d'][ii - 1][1]),
-                          (obj['bbox_3d'][ii][0], obj['bbox_3d'][ii][1]), (np.array(color) * 255).astype(np.int).tolist(), 1)
+                vis_im = cv2.line(vis_im, (bbox_3d[ii - 1][0], bbox_3d[ii - 1][1]),
+                          (bbox_3d[ii][0], bbox_3d[ii][1]), (np.array(color) * 255).astype(np.int).tolist(), 1)
+
+        return vis_im
+
+    def vis_bbox_cam(self, image, bboxes_3d, pc_size=0.7):
+        """diplay pseudo 2d bounding box from camera
+        
+        :param image: camera which the bounding box is going to be projected
+        :type image: np.array
+        :param bboxes_3d: list of bounding box information with pseudo-3d image coordinate frame
+        :type bboxes_3d: dict
+        :param pc_size: percentage of the size of the bounding box [0.0 1.0]
+        :type pc_size: float
+        :return: camera image with the correspondent bounding boxes
+        :rtype: np.array
+        """
+        vis_im = np.copy(image)
+        for obj in bboxes_3d:
+            color = self.colors[obj['class_name']]
+            bb = np.zeros((4))
+            if obj['bbox_3d'].shape[0] > 0:
+                bb[0] = np.min(obj['bbox_3d'][:,0])
+                bb[1] = np.min(obj['bbox_3d'][:,1])
+                bb[2] = np.max(obj['bbox_3d'][:,0])
+                bb[3] = np.max(obj['bbox_3d'][:,1])
+                wid = bb[2] - bb[0]
+                # hei = bb[3] - bb[1]
+                bb[0] += wid*(1.0 - pc_size)
+                bb[2] -= wid*(1.0 - pc_size)
+                bb = bb.astype(np.int)
+                vis_im = cv2.rectangle(vis_im, (bb[0], bb[1]), (bb[2], bb[3]), (np.array(color) * 255))
 
         return vis_im
         
 
-    def get_lidar_annotations(self, id_radar):
+    def get_lidar_annotations(self, id_radar, interp=False, t_c=None, t_r1=None, t_r2=None):
         """get the annotations in lidar image coordinate frame
         
         :param id_radar: the annotation radar id
         :type id_radar: int
+        :param interp: whether to use interpolation or not
+        :type interp: bool
+        :param t: timestamp
+        :type t: float
         :return: the annotations in lidar image coordinate frame
         :rtype: dict
         """
         lidar_annotation_id = self.__get_correct_lidar_id_from_raw_ind(id_radar)
         lidar_annotations = self.get_annotation_from_id(lidar_annotation_id)
+        if interp and len(self.get_annotation_from_id(lidar_annotation_id+1)) > 0:
+            lidar_annotations_next = self.get_annotation_from_id(lidar_annotation_id+1)
+            
+            for ii in range(len(lidar_annotations)):
+                try:
+                    p1x = lidar_annotations[ii]['bbox']['position'][0]
+                    p1y = lidar_annotations[ii]['bbox']['position'][1]
+                    p2x = lidar_annotations_next[ii]['bbox']['position'][0]
+                    p2y = lidar_annotations_next[ii]['bbox']['position'][1]
+                    lidar_annotations[ii]['bbox']['position'][0] = self.__linear_interpolation(p1x, t_c, t_r1, t_r2, p2x)
+                    lidar_annotations[ii]['bbox']['position'][1] = self.__linear_interpolation(p1y, t_c, t_r1, t_r2, p2y)
+                    # __linear_interpolation(self, p1, t_c, t_r1, t_r2, p2)
+                except:
+                    pass
         M = self.calib.RadarToLidar
 
-        h_width = self.config['lidar_image']['res'][0]/2.0
-        h_height = self.config['lidar_image']['res'][1]/2.0
+        h_width = self.config['lidar_bev_image']['res'][0]/2.0
+        h_height = self.config['lidar_bev_image']['res'][1]/2.0
         cell_res_x = 100.0/h_width
         cell_res_y = 100.0/h_height
         
@@ -494,7 +549,7 @@ class Sequence:
         """
         new_pc = []
         for point in pc:
-            new_object = object
+            # new_object = object
             xx = point[0]
             yy = point[1]
             zz = point[2]
@@ -523,7 +578,7 @@ class Sequence:
                 raw_annotations.append(obj)
         return raw_annotations
 
-    def __inner_lidar_image(self, lidar,
+    def __inner_lidar_bev_image(self, lidar,
                                 image,
                                 i,
                                 cell_res_x,
@@ -533,7 +588,7 @@ class Sequence:
         xyzi = lidar[i]
         x = xyzi[0]/cell_res_x + h_width
         y = h_height - xyzi[1]/cell_res_y
-        if self.config['lidar_image']['use_ring']:
+        if self.config['lidar_bev_image']['use_ring']:
             c = int(xyzi[4]) * 8
         else:
             c = int(xyzi[3])
@@ -549,17 +604,17 @@ class Sequence:
         :return: 2d bird's eye image with the lidar information
         :rtype: np.array
         """
-        image = np.zeros((self.config['lidar_image']['res'][0], self.config['lidar_image']['res'][1], 3))
-        h_width = self.config['lidar_image']['res'][0]/2.0
-        h_height = self.config['lidar_image']['res'][1]/2.0
+        image = np.zeros((self.config['lidar_bev_image']['res'][0], self.config['lidar_bev_image']['res'][1], 3))
+        h_width = self.config['lidar_bev_image']['res'][0]/2.0
+        h_height = self.config['lidar_bev_image']['res'][1]/2.0
         cell_res_x = 100.0/h_width
         cell_res_y = 100.0/h_height
         for i in range(lidar.shape[0]):
-            if self.config['lidar_image']['remove_ground']:
-                if lidar[i,2] > -self.config['lidar_image']['ground_thresh'] :
-                    image = self.__inner_lidar_image(lidar, image, i, cell_res_x, cell_res_y, h_width, h_height)
+            if self.config['lidar_bev_image']['remove_ground']:
+                if lidar[i,2] > -self.config['lidar_bev_image']['ground_thresh'] :
+                    image = self.__inner_lidar_bev_image(lidar, image, i, cell_res_x, cell_res_y, h_width, h_height)
             else:
-                image = self.__inner_lidar_image(lidar, image, i, cell_res_x, cell_res_y, h_width, h_height)
+                image = self.__inner_lidar_bev_image(lidar, image, i, cell_res_x, cell_res_y, h_width, h_height)
         return image.astype(np.uint8)
 
     def __get_correct_radar_id_from_raw_ind(self, id):
@@ -568,25 +623,27 @@ class Sequence:
     def __get_correct_lidar_id_from_raw_ind(self, id):
         return id-1
 
-    def vis (self, sensor, annotations):
+    def vis (self, sensor, objects, color=None, mode='rot'):
         """ visualise the sensor and its annotation
         
         :param sensor: 
         :type sensor: the given sensor
-        :param annotations: np.array
-        :type annotations: list of annotations
-        :return: image with the annotations overlayed
+        :param objects: np.array
+        :type objects: list of objects
+        :return: image with the objects overlayed
         :rtype: np.array
         """
         sensor_vis = np.copy(sensor)
-        for object in annotations:
+        for object in objects:
             bbox = object['bbox']['position']
             angle = object['bbox']['rotation']
         
             class_name = object['class_name']
-            color = self.colors[class_name]
-            sensor_vis = self.__draw_boundingbox_rot(
-                sensor_vis, bbox, angle, color)
+            if color == None:
+                color = self.colors[class_name]
+            if mode == 'rot':
+                sensor_vis = self.draw_boundingbox_rot(
+                    sensor_vis, bbox, angle, color)
 
         return sensor_vis
 
@@ -614,7 +671,8 @@ class Sequence:
         :return: the closest id
         :rtype: int
         """
-        return all_timestamps['frame'][np.argmin(np.abs(all_timestamps['time'] - t + time_offset))]
+        ind = np.argmin(np.abs(all_timestamps['time'] - t + time_offset))
+        return all_timestamps['frame'][ind], all_timestamps['time'][ind]
 
     def load_timestamp(self, timestamp_path):
         """load all timestamps from a sensor
@@ -707,7 +765,7 @@ class Sequence:
         proj_bbox_3d = np.array(proj_bbox_3d)
         return proj_bbox_3d
 
-    def __draw_boundingbox_rot(self, im, bbox, angle, color):
+    def draw_boundingbox_rot(self, im, bbox, angle, color):
         theta = np.deg2rad(-angle)
         R = np.array([[np.cos(theta), -np.sin(theta)],
                       [np.sin(theta), np.cos(theta)]])

@@ -3,8 +3,8 @@ import numpy as np
 import os
 
 # path to the sequence
-root_path = 'path/to/dataset/root/'
-sequence_name = 'city_3_2'
+root_path = '../../../../datasets/radiate/'
+sequence_name = 'city_3_7'
 
 # time (s) to retrieve next frame
 dt = 0.1
