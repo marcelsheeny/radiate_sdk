@@ -3,11 +3,11 @@ import numpy as np
 import os
 
 # path to the sequence
-root_path = '../../../../datasets/radiate/'
-sequence_name = 'city_3_7'
+root_path = '/media/marcel/df5725dc-6216-424d-842c-30fff5c71c5d/datasets/radiate/'
+sequence_name = 'fog_6_0'
 
 # time (s) to retrieve next frame
-dt = 0.1
+dt = 0.25
 
 # load sequence
 seq = radiate.Sequence(os.path.join(root_path, sequence_name))

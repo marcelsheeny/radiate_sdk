@@ -6,6 +6,7 @@ import json
 import pandas as pd
 import math
 import yaml
+from mpl_toolkits.mplot3d import Axes3D
 from utils.calibration import Calibration
 
 class Sequence:
@@ -32,6 +33,8 @@ class Sequence:
         :param config_file: the path to the configuration files
         """
         self.sequence_path = sequence_path
+
+        
         
         # load annotations
         self.annotations_path = os.path.join(
@@ -47,6 +50,9 @@ class Sequence:
 
         # generate calibration matrices from calib file
         self.calib = Calibration(self.config)
+
+        # output folder
+        self.output_folder = os.path.join(self.config['output_folder'], os.path.basename(self.sequence_path))
         
         # colors used for display
         self.colors = {'car': (1, 0, 0),
@@ -187,6 +193,7 @@ class Sequence:
         :return: returns a single variable as a dictorionary with 'sensors' and 'annotations' as key
         :rtype: dict
         """
+        self.current_time = t
         id_camera, ts_camera = self.get_id(t, self.timestamp_camera, self.config['sync']['camera'])
         id_lidar, ts_lidar = self.get_id(t, self.timestamp_lidar, self.config['sync']['lidar'])
         id_radar, ts_radar = self.get_id(t, self.timestamp_radar, self.config['sync']['radar'])
@@ -303,32 +310,61 @@ class Sequence:
         :type wait_time: int, optional
         """
 
+        if self.config['save_images']:
+            os.makedirs(os.path.join(self.output_folder, str(self.current_time)), exist_ok=True)
         if self.config['use_camera_left_raw']:
             cv2.imshow('camera left raw', output['sensors']['camera_left_raw'])
+            if self.config['save_images']:
+                cv2.imwrite(os.path.join(self.output_folder,  str(self.current_time), 'camera_left_raw.png'), output['sensors']['camera_left_raw'])
 
         if self.config['use_camera_right_raw']:
             cv2.imshow('camera right raw', output['sensors']['camera_right_raw'])
+            if self.config['save_images']:
+                cv2.imwrite(os.path.join(self.output_folder,  str(self.current_time), 'camera_right_raw.png'), output['sensors']['camera_right_raw'])
 
         if self.config['use_camera_left_rect']:
             left_bb = self.vis_3d_bbox_cam(output['sensors']['camera_left_rect'], output['annotations']['camera_left_rect'])
             cv2.imshow('camera left', left_bb)
+            if self.config['save_images']:
+                cv2.imwrite(os.path.join(self.output_folder,  str(self.current_time), 'left_bb.png'), left_bb)
 
         if  self.config['use_camera_right_rect']:
             right_bb = self.vis_3d_bbox_cam(output['sensors']['camera_right_rect'], output['annotations']['camera_right_rect'])
             cv2.imshow('camera right', right_bb)
+            if self.config['save_images']:
+                cv2.imwrite(os.path.join(self.output_folder,  str(self.current_time), 'right_bb.png'), right_bb.astype(np.uint8))
 
         if self.config['use_radar_cartesian']:
             radar_cart_vis = self.vis(output['sensors']['radar_cartesian'], output['annotations']['radar_cartesian'])
+            radar_cart_vis = radar_cart_vis[int(radar_cart_vis.shape[0]/4):int(radar_cart_vis.shape[0]/4+radar_cart_vis.shape[0]/2),
+                                            int(radar_cart_vis.shape[1]/4):int(radar_cart_vis.shape[1]/4+radar_cart_vis.shape[1]/2)]
             cv2.imshow('radar', radar_cart_vis)
+            if self.config['save_images']: 
+                cv2.imwrite(os.path.join(self.output_folder,  str(self.current_time), 'radar_cart_vis.png'), radar_cart_vis)
 
         if self.config['use_radar_polar']:
             cv2.imshow('radar', output['sensors']['radar_polar'])
+            if self.config['save_images']:
+                cv2.imwrite(os.path.join(self.output_folder,  str(self.current_time), 'radar_polar.png'), output['sensors']['radar_polar'])
 
         if (self.config['use_lidar_bev_image']):
             lidar_vis = self.vis(output['sensors']['lidar_bev_image'], output['annotations']['lidar_bev_image'])
+            lidar_vis = lidar_vis[int(lidar_vis.shape[0]/4):int(lidar_vis.shape[0]/4+lidar_vis.shape[0]/2),
+                                  int(lidar_vis.shape[1]/4):int(lidar_vis.shape[1]/4+lidar_vis.shape[1]/2)]
             cv2.imshow('lidar image', lidar_vis)
+            if self.config['save_images']:
+                cv2.imwrite(os.path.join(self.output_folder,  str(self.current_time), 'lidar_vis.png'), lidar_vis)
         
         if (self.config['use_lidar_pc']):
+            # ax = Axes3D(plt.gcf())
+            # ax.scatter(output['sensors']['lidar_pc'][:,0],output['sensors']['lidar_pc'][:,1],output['sensors']['lidar_pc'][:,2],s=2)
+            # ax.set_xlabel('x')
+            # ax.set_ylabel('y')
+            # ax.set_zlabel('z')
+            # plt.scatter(output['sensors']['lidar_pc'][:,0],output['sensors']['lidar_pc'][:,1])
+            # plt.xlabel('x')
+            # plt.ylabel('y')
+            # plt.show()
             pass
 
         if self.config['use_proj_lidar_left'] :
@@ -336,11 +372,15 @@ class Sequence:
                                                 output['sensors']['proj_lidar_left'])
             overlay_left_bb = self.vis_3d_bbox_cam(overlay_left, output['annotations']['camera_left_rect'])
             cv2.imshow('projected lidar to left camera', overlay_left_bb)
+            if self.config['save_images']:
+                cv2.imwrite(os.path.join(self.output_folder,  str(self.current_time), 'overlay_left_bb.png'), overlay_left_bb)
         if self.config['use_proj_lidar_right'] :
             overlay_right = self.overlay_camera_lidar(output['sensors']['camera_right_rect'],
                                                 output['sensors']['proj_lidar_right'])
             overlay_right_bb = self.vis_3d_bbox_cam(overlay_right, output['annotations']['camera_right_rect'])
             cv2.imshow('projected lidar to right camera', overlay_right_bb)
+            if self.config['save_images']:
+                cv2.imwrite(os.path.join(self.output_folder, str(self.current_time), 'overlay_right_bb.png'), overlay_right_bb)
 
         
         cv2.waitKey(wait_time)
@@ -794,3 +834,39 @@ class Sequence:
 
     def __linear_interpolation(self, p1,t_c, t_r1, t_r2, p2):
         return p1 + (t_c - t_r1)*((p2 - p1)/(t_r2 - t_r1))
+
+    def cfar2d(self, x, num_train, num_guard, rate_fa):
+        out = np.zeros_like(x)
+        for c in range(x.shape[1]):
+            out[:, c] = cfar(x[:, c], num_train, num_guard, rate_fa).T
+
+        return out
+
+
+    def cfar(self, x, num_train, num_guard, rate_fa):
+        """
+        Detect peaks with CFAR algorithm.
+
+        num_train: Number of training cells.
+        num_guard: Number of guard cells.
+        rate_fa: False alarm rate.
+        """
+        num_train_half = round(num_train / 2)
+        num_guard_half = round(num_guard / 2)
+        num_side = num_train_half + num_guard_half
+
+        out = np.zeros_like(x)
+
+        alpha = num_train * (rate_fa**(-1 / num_train) - 1)  # threshold factor
+
+        # generate mask
+        mask = np.ones(num_side * 2)
+        mask[num_train_half:num_guard] = 0
+        mask /= num_train
+
+        noise = np.convolve(x, mask, 'same')
+
+        threshold = alpha * noise
+        out = np.greater(x, threshold) * 255
+
+        return out

@@ -10,10 +10,14 @@ use_camera_left_rect: False
 use_camera_right_rect: True
 use_radar_polar: False
 use_radar_cartesian: True
-use_lidar_pc: False
+use_lidar_pc: True
 use_lidar_bev_image: True
 use_proj_lidar_left: False
 use_proj_lidar_right: True
+
+# wheter to save the images
+save_images: False
+output_folder: 'saved_images'
 
 # whether to interpolate bounding boxes or not
 interpolate_bboxes: False

@@ -2,3 +2,4 @@ matplotlib
 opencv-python
 pandas
 numpy
+pyyaml
