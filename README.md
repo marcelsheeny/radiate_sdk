@@ -1,6 +1,64 @@
+# RADIATE Dataset
+
+RADIATE (RAdar Dataset In Adverse weaThEr) is new automotive dataset created by Heriot-Watt University which includes Radar, Lidar, Stereo Camera and GPS/IMU.
+
+We collected data in different weather scenarios (sunny, overcast, night, fog, rain and snow) to help the research community to develop new methods of vehicle perception
+
+![](assets/radiate.png)
+
+## Sensors
+
+![](assets/sensors.png)
+
+* **Stereo Camera**: An off-the-shelf ZED stereo camera is used. It is set at 672 × 376 image resolution at 15 frames per second for each camera. It is protected by a waterproof housing
+for extreme weather. The images can be seriously blurred, hazy or fully blocked due to rain drops, dense fog or heavy snow, respectively.
+* **LiDAR**: A 32 channel, 10Hz, Velodyne HDL-32e LiDAR is used to give 360° coverage. Since the LiDAR signal can be severely attenuated and reflected by intervening fog or snow the data can be missing, noisy and incorrect.
+* **Radar** RADIATE adopts the Navtech CTS350-X radar. It is a scanning radar which provides 360° high-resolution range-azimuth images. It has 100 meters maximum operating range with 0.175m range resolution, 1.8° azimuth resolution and 1.8° elevation resolution, Currently, it does not provide Doppler information.
+* **GPS/IMU** : Advanced Navigation GPS/IMU is provided. 
+
+## Folder Structure and File Format
+
+![](assets/folder_tree.png)
+
+* **GPS_IMU_Twist**: We provide a readable *.txt* file. Each line is shown below:
+  
+    GPS-IMU file format:
+
+    Latitude Longitude Altitude
+
+    GPS position_covariance (3x3)
+
+    IMU.Orientation.X IMU.Orientation.Y IMU.Orientation.Z IMU.Orientation.W
+
+    IMU.AngularVelocity.X IMU.AngularVelocity.Y IMU.AngularVelocity.Z
+
+    IMU.LinearAccelaration.X IMU.LinearAccelaration.Y IMU.LinearAccelaration.Z
+
+    IMU.Orientation Covariance (3x3)
+
+    IMU.AngularVelocity Covariance (3x3)
+
+    IMU.LinearAccelaration Covariance (3x3)
+
+* **Navtech_Polar**: We provide *.png* with resolution 576 x 400. Where each row represents the range with resolution 0.17361 m. And each column represents the angle with resolution 1.1°.
+
+* **Navtech_Cartesian**: We provide *.png* with resolution 1152 x 1152. This is a implementation from polar to cartesian. We use nearest neighbor interpolation. The each pixel represents a 0.17361 m x 0.17361 m.
+*  **velo_lidar**: We provide readable *.txt* files where each line represents x,y,z,intensity,ring. (x,y,z) represents the 3D point cloud in the lidar frame. Intensity [0-255] is reflectance captured by the sensor. Ring [1-32] means from each of the 32 channels the detected point came from.
+*  **zed_left/right**: We provide *.png* unrectified images with resolution 672 × 376. 
+  
+Each folder contains a *FOLDER.txt* which shows the timestamp for each collected frame. The format is Frame: XXXXXX Time: XXXXXX. Where frame is the frame ID which correspond to the filename. Time is the timestamp using UNIX time system in seconds.
+
+
+## Annotation Structure
+
+The annotation is a *.json* file. where each entry contains *id,class_name,bboxes*. *id* is the object identification. *class_name* is a string with the name class. *bboxes* contains *position*: (x,y,width,height) where (x,y) is the upper-left pixel locations of the bounding box, of given width and height. And *angle* is the angle in degrees using counter-clockwise.
+
+Each bounding box is
+represented as (x,y,width,height,angle), w and 
+
 # RADIATE SDK
 
-Software development kit (SDK) to use the RADIATE dataset.
+Software development kit (SDK) to use the RADIATE dataset. The SDK was tested using Python 3.7.
 
 ## Installation
 
