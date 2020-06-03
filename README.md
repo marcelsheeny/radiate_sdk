@@ -30,34 +30,142 @@ for extreme weather. The images can be seriously blurred, hazy or fully blocked 
     Line 7: IMU.LinearAccelaration.X IMU.LinearAccelaration.Y IMU.LinearAccelaration.Z
     Line [8-10]: IMU.Orientation Covariance (3x3)
     Line [11-13]: IMU.AngularVelocity Covariance (3x3)
-    Line [14-16]:IMU.LinearAccelaration Covariance (3x3)
+    Line [14-16]: IMU.LinearAccelaration Covariance (3x3)
     Line 17: Twist.Linear.X, Twist.Linear.Y, Twist.Linear.Z
     Line 18: Twist.Angular.X, Twist.Angular.Y, Twist.Angular.Z
     ```
+    
+    Example:
+    ![](assets/gpu_imu_file.png)
 
+* **Navtech_Polar**: We provide *.png* with resolution 400 x 576. Where each row represents the range [0 m - 100 m] with resolution 0.17361 m. And each column represents the angle with resolution 1.1°.
 
-* **Navtech_Polar**: We provide *.png* with resolution 400 x 576. Where each row represents the range with resolution 0.17361 m. And each column represents the angle with resolution 1.1°.
+    Example:
+    ![](assets/radar_polar.png)
 
 * **Navtech_Cartesian**: We provide *.png* with resolution 1152 x 1152. This is a implementation from polar to cartesian. We use nearest neighbor interpolation. The each pixel represents a 0.17361 m x 0.17361 m.
+
+    Example:
+    ![](assets/radar_cartesian.png)
 *  **velo_lidar**: We provide readable *.txt* files where each line represents `x,y,z,intensity,ring`. (x,y,z) represents the 3D point cloud in the lidar frame. Intensity [0-255] is reflectance captured by the sensor. Ring [0-31] means from each of the 32 channels the detected point came from.
+
+    Example:
+    ```
+    -0.48352,-0.24456,0.01258,10,24
+    -0.49561,-0.25068,0.0259,9,25
+    -0.48782,-0.24673,0.038227,8,26
+    -0.46912,-0.23728,0.049047,14,27
+    -0.48393,-0.24477,0.063418,10,28
+    -0.48104,-0.24331,-0.12773,0,13
+    -0.48602,-0.24582,0.076545,9,29
+    ```
+
 *  **zed_left/right**: We provide *.png* unrectified images with resolution 672 × 376. 
   
-Each folder contains a *FOLDER.txt* which shows the timestamp for each collected frame. The format is:
+    Example:
+  
+    | Left Camera | Right Camera|
+    |:------:|:-------:|
+    |![](assests/left.png)|![](assests/right.png)|
+  
+* **Timestamps**: Each folder contains a `FOLDER.txt` which shows the timestamp for each collected frame. The format is:
+
+    ```
+    Frame: XXXXXX Time: XXXXXX
+    ```
+    
+    where frame is the frame ID which correspond to the filename. Time is the timestamp using UNIX time system in seconds.
+
+    Example:
+    ```
+    Frame: 000001 Time: 1574859771.744660272
+    Frame: 000002 Time: 1574859771.977525228
+    Frame: 000003 Time: 1574859772.213924306
+    Frame: 000004 Time: 1574859772.452509138
+    Frame: 000005 Time: 1574859772.696168000
+    Frame: 000006 Time: 1574859772.936284528
+    Frame: 000007 Time: 1574859773.185142137
+    Frame: 000008 Time: 1574859773.432649521
+    Frame: 000009 Time: 1574859773.684750112
+    Frame: 000010 Time: 1574859773.932542386
+    ```
+
+## Sensor Calibration
+
+Sensor calibration is required for multi-sensor fusion, feature and actor correspondence. The intrinsic parameters and distortion coefficients of the stereo camera are calibrated using the Matlab camera calibration toolbox. Then, rectified images can be generated to calculate depths. In terms of extrinsic calibration, the radar sensor is chosen as the origin of the local coordinate frame as it is the main sensor. The extrinsic parameters for the radar, camera and LiDAR are represented as 6 degree-of-freedom transformations (translation and rotation). They are performed by first explicitly measuring the distance between the sensors, and then fine-tuned by aligning measurements between each pair of sensors. The sensor calibration parameters are provided in a `config/default-calib.yaml` file. The sensors operate at different frame rates and we simply adopt each sensor data’s time of arrival as the timestamp.
+
+The sensor calibration paremeters calculated are given below.
 
 ```
-Frame: XXXXXX Time: XXXXXX
+# Radar calibration parameters
+radar_calib:
+    T: [0.0, 0.0, 0.0]
+    R: [0.0, 0.0, 0.0]
+
+# Lidar calibration parameters
+lidar_calib:
+    T: [0.6003, -0.120102, 0.250012]
+    R: [0.0001655, 0.000213, 0.000934]
+
+
+# Left camera calibration parameters
+left_cam_calib:
+    T: [0.34001, -0.06988923, 0.287893]
+    R: [1.278946, -0.530201, 0.000132]
+    fx: 3.379191448899105e+02
+    fy: 3.386957068549526e+02
+    cx: 3.417366010946575e+02
+    cy: 2.007359735313929e+02
+    k1: -0.183879883467351
+    k2: 0.0308609205858947
+    k3: 0
+    p1: 0
+    p2: 0
+    res: [672, 376]
+   
+
+# Right camera calibration parameters
+right_cam_calib:
+    T: [0.4593822, -0.0600343, 0.287433309324]
+    R: [0.8493049332, 0.37113944, 0.000076230]
+    fx: 337.873451599077
+    fy: 338.530902554779
+    cx: 329.137695760749
+    cy: 186.166590759716
+    k1: -0.181771143569008
+    k2: 0.0295682692890613
+    k3: 0
+    p1: 0
+    p2: 0
+    res: [672, 376]
+
+# Stereo calibration parameters
+stereo_calib:
+    TX: -120.7469
+    TY: 0.1726
+    TZ: 1.1592
+    CV: 0.0257154
+    RX: -0.0206928
+    RZ: -0.000595637
+    R: [[0.999983541478846,   0.000655753417350, -0.005699715684273],
+        [-0.000622470939159,   0.999982758359834,   0.005839136322126],
+        [0.005703446445424, -0.005835492311203,   0.9999667083098977]]
 ```
- 
-where frame is the frame ID which correspond to the filename. Time is the timestamp using UNIX time system in seconds.
 
 
 ## Annotation Structure
 
-The annotation is a *.json* file. where each entry contains *id,class_name,bboxes*. *id* is the object identification. *class_name* is a string with the name class. *bboxes* contains *position*: (x,y,width,height) where (x,y) is the upper-left pixel locations of the bounding box, of given width and height. And *angle* is the angle in degrees using counter-clockwise.
+The annotation is a *.json* file. where each entry of a list contains `id,class_name,bboxes`. `id` is the object identification. `class_name` is a string with the name class. `bboxes` contains `position`: `(x,y,width,height)` where `(x,y)` is the upper-left pixel locations of the bounding box, of given width and height. And `rotation` is the angle in degrees using counter-clockwise.
+
+Example:
+
+![](assets/annotations.png)
 
 # RADIATE SDK
 
-Software development kit (SDK) to use the RADIATE dataset. The SDK was tested using Python 3.7. The SDK is used for data calibration, visualisation, and pre-processing.
+Software development kit (SDK) to use the RADIATE dataset. The SDK was tested using Python 3.7. The SDK is used for data calibration, visualisation, and pre-processing. Example below of information which can be retrieved from the SDK.
+
+![](assets/weather_radiate.png)
 
 ## Installation
 
@@ -100,7 +208,7 @@ import os
 
 # path to the sequence
 root_path = 'data/radiate/'
-sequence_name = 'fog_6_0'
+sequence_name = 'tiny_foggy'
 
 # time (s) to retrieve next frame
 dt = 0.25

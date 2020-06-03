@@ -11,7 +11,7 @@ Use the [instructions](https://github.com/facebookresearch/detectron2/blob/maste
 Below are the table with the weights trained using radar only. We used Faster R-CNN with rectangular and rotated bounding boxes. We also provided training in both good and bad weather and in good weather only.
 The results (AP) are computed from the training set which contains both good and bad weather data.
 
-### Rectangular Bounding Boxes
+### Horizontal Bounding Boxes
 | Network        | Download Command           | AP(%)  |
 | ------------- |-------------| -----|
 | `faster_rcnn_resnet50` Trained in good and bad weather     | `wget -O weights/faster_rcnn_R_50_FPN_3x_good_and_bad_weather_radar.pth https://www.dropbox.com/s/ltwf6qiv49sn20m/model_final.pth?dl=0` | 53.57 |
@@ -22,7 +22,7 @@ The results (AP) are computed from the training set which contains both good and
 
 
 
-### Rotated Bounding Boxes
+### Oriented Bounding Boxes
 | Network        | Download Command           | AP(%)  |
 | ------------- |-------------| -----|
 | `faster_rcnn_resnet50` Trained in good and bad weather      | `wget -O weights/faster_rrcnn_R_50_FPN_3x_good_and_bad_weather_radar.pth https://www.dropbox.com/s/eoj83ynvs1dernx/model_final.pth?dl=0` | 45.77 |

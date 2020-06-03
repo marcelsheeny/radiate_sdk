@@ -22,7 +22,7 @@ import radiate
 
 # path to the sequence
 root_path = '../data/radiate/'
-sequence_name = 'fog_6_0'
+sequence_name = 'tiny_foggy'
 
 network = 'faster_rcnn_R_101_FPN_3x'
 setting = 'good_and_bad_weather_radar'
@@ -36,16 +36,13 @@ seq = radiate.Sequence(os.path.join(root_path, sequence_name), config_file='../c
 cfg = get_cfg()
 # add project-specific config (e.g., TensorMask) here if you're not running a model in detectron2's core library
 cfg.merge_from_file(os.path.join('test','config' , network + '.yaml'))
-cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5  # set threshold for this model
 cfg.MODEL.DEVICE = 'cpu'
 cfg.MODEL.WEIGHTS = os.path.join('weights',  network +'_' + setting + '.pth')
-cfg.DATALOADER.NUM_WORKERS = 0
-cfg.SOLVER.IMS_PER_BATCH = 2
-cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
-cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1  # only has one class (ballon)
+cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1  # only has one class (vehicle)
 cfg.MODEL.ROI_HEADS.NMS_THRESH_TEST = 0.2
 cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]
 predictor = DefaultPredictor(cfg)
+
 for t in np.arange(seq.init_timestamp, seq.end_timestamp, dt):
     output = seq.get_from_timestamp(t)
     if output != {}:

@@ -4,7 +4,7 @@ import os
 
 # path to the sequence
 root_path = 'data/radiate/'
-sequence_name = 'fog_6_0'
+sequence_name = 'tiny_foggy'
 
 # time (s) to retrieve next frame
 dt = 0.25
