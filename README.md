@@ -40,7 +40,7 @@ for extreme weather. The images can be seriously blurred, hazy or fully blocked 
 
     IMU.LinearAccelaration Covariance (3x3)
 
-* **Navtech_Polar**: We provide *.png* with resolution 576 x 400. Where each row represents the range with resolution 0.17361 m. And each column represents the angle with resolution 1.1°.
+* **Navtech_Polar**: We provide *.png* with resolution 400 x 576. Where each row represents the range with resolution 0.17361 m. And each column represents the angle with resolution 1.1°.
 
 * **Navtech_Cartesian**: We provide *.png* with resolution 1152 x 1152. This is a implementation from polar to cartesian. We use nearest neighbor interpolation. The each pixel represents a 0.17361 m x 0.17361 m.
 *  **velo_lidar**: We provide readable *.txt* files where each line represents x,y,z,intensity,ring. (x,y,z) represents the 3D point cloud in the lidar frame. Intensity [0-255] is reflectance captured by the sensor. Ring [1-32] means from each of the 32 channels the detected point came from.
@@ -53,12 +53,9 @@ Each folder contains a *FOLDER.txt* which shows the timestamp for each collected
 
 The annotation is a *.json* file. where each entry contains *id,class_name,bboxes*. *id* is the object identification. *class_name* is a string with the name class. *bboxes* contains *position*: (x,y,width,height) where (x,y) is the upper-left pixel locations of the bounding box, of given width and height. And *angle* is the angle in degrees using counter-clockwise.
 
-Each bounding box is
-represented as (x,y,width,height,angle), w and 
-
 # RADIATE SDK
 
-Software development kit (SDK) to use the RADIATE dataset. The SDK was tested using Python 3.7.
+Software development kit (SDK) to use the RADIATE dataset. The SDK was tested using Python 3.7. The SDK is used for data calibration, visualisation, and pre-processing.
 
 ## Installation
 
@@ -76,3 +73,41 @@ The file 'config/config.yaml' controls which sensors to use and configure their 
 - **lidar_pc**: It gives the raw point cloud lidar information in the format (x,y,z,i,r) where x,y,z are the coordinates in meters relative to the radar sensor, 'i' is the power intensity received by the sensor. 'i' is quantised to values between 0 and 255, where it represents mostly the object material. And 'r' says from which ring of the sensor the point came from.
 - **lidar_bev_image**: It gives an image with the same size as *radar_cartesian* with a bird's eye view representation. This type of image is created for researchers who want to use the lidar in a grid format and also use it together with the radar in a grid format. 
 - **proj_lidar_(left\right)**: This gives the projected lidar points in a camera coordinate frame. It can be used to improve the stereo reconstruction and also fuse the information from the camera with lidar.
+
+The file `demo.py` contains a small code which just display the annotations.
+
+```
+import radiate
+import numpy as np
+import os
+
+# path to the sequence
+root_path = 'data/radiate/'
+sequence_name = 'fog_6_0'
+
+# time (s) to retrieve next frame
+dt = 0.25
+
+# load sequence
+seq = radiate.Sequence(os.path.join(root_path, sequence_name))
+
+# play sequence
+for t in np.arange(seq.init_timestamp, seq.end_timestamp, dt):
+    output = seq.get_from_timestamp(t)
+    seq.vis_all(output, 0)
+```
+
+In order to get the annotation values, the variable 'output' is a dictionary with the sensor and its correspondent annotation.
+
+### Example: 
+
+`output['sensors']['radar_cartesian']` contains a np.array with the radar image.
+
+`output['annotations']['radar_cartesian']` contains a list of bounding boxes with `id`, `class_name` and `bbox`. `bbox` : `position` is represented as `x,y,width,height` and `bbox` : `rotation` is the angle counter-clockwise in degrees. This is exemplified below:
+
+```
+'id':1
+'class_name':'bus'
+'bbox':{'position': [603.5340471042896, 149.7590074419735, 26.620884098218767, 73.56976270380676], 'rotation': 177.69489304897752}
+__len__:3
+```
