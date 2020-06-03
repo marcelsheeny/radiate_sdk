@@ -42,7 +42,13 @@ for extreme weather. The images can be seriously blurred, hazy or fully blocked 
 *  **velo_lidar**: We provide readable *.txt* files where each line represents `x,y,z,intensity,ring`. (x,y,z) represents the 3D point cloud in the lidar frame. Intensity [0-255] is reflectance captured by the sensor. Ring [0-31] means from each of the 32 channels the detected point came from.
 *  **zed_left/right**: We provide *.png* unrectified images with resolution 672 × 376. 
   
-Each folder contains a *FOLDER.txt* which shows the timestamp for each collected frame. The format is Frame: XXXXXX Time: XXXXXX. Where frame is the frame ID which correspond to the filename. Time is the timestamp using UNIX time system in seconds.
+Each folder contains a *FOLDER.txt* which shows the timestamp for each collected frame. The format is:
+
+```
+Frame: XXXXXX Time: XXXXXX
+```
+ 
+where frame is the frame ID which correspond to the filename. Time is the timestamp using UNIX time system in seconds.
 
 
 ## Annotation Structure
