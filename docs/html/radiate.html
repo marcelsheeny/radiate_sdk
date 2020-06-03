@@ -1,0 +1,611 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>radiate module &mdash; RADIATE SDK  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="radiate_sdk" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> RADIATE SDK
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">radiate_sdk</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">radiate module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">RADIATE SDK</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">radiate_sdk</a> &raquo;</li>
+        
+      <li>radiate module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/radiate.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-radiate">
+<span id="radiate-module"></span><h1>radiate module<a class="headerlink" href="#module-radiate" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="radiate.Sequence">
+<em class="property">class </em><code class="sig-prename descclassname">radiate.</code><code class="sig-name descname">Sequence</code><span class="sig-paren">(</span><em class="sig-param">sequence_path</em>, <em class="sig-param">config_file='config/config.yaml'</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class loads the sequence of RADIATE dataset</p>
+<div class="line-block">
+<div class="line">Example:</div>
+<div class="line">&gt;&gt;&gt; import radiate</div>
+<div class="line">&gt;&gt;&gt; root_path = ‘path/to/radiate/city_3_7/’</div>
+<div class="line">&gt;&gt;&gt; seq = radiate.Sequence(root_path)</div>
+<div class="line">&gt;&gt;&gt; output = seq.get_from_timestamp(seq.init_timestamp)</div>
+<div class="line">&gt;&gt;&gt; seq.vis_all(output)</div>
+</div>
+<dl class="method">
+<dt id="radiate.Sequence.cfar">
+<code class="sig-name descname">cfar</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">num_train</em>, <em class="sig-param">num_guard</em>, <em class="sig-param">rate_fa</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.cfar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect peaks with CFAR algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – input 1d array</p></li>
+<li><p><strong>num_train</strong> (<em>int</em>) – Number of training cells.</p></li>
+<li><p><strong>num_guard</strong> (<em>int</em>) – Number of guard cells.</p></li>
+<li><p><strong>rate_fa</strong> (<em>float</em>) – False alarm rate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>detected points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.cfar2d">
+<code class="sig-name descname">cfar2d</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">num_train</em>, <em class="sig-param">num_guard</em>, <em class="sig-param">rate_fa</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.cfar2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect peaks with 2D CFAR algorithm in each row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – input 2d array</p></li>
+<li><p><strong>num_train</strong> (<em>int</em>) – Number of training cells.</p></li>
+<li><p><strong>num_guard</strong> (<em>int</em>) – Number of guard cells.</p></li>
+<li><p><strong>rate_fa</strong> (<em>float</em>) – False alarm rate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>detected points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.draw_boundingbox_rot">
+<code class="sig-name descname">draw_boundingbox_rot</code><span class="sig-paren">(</span><em class="sig-param">im</em>, <em class="sig-param">bbox</em>, <em class="sig-param">angle</em>, <em class="sig-param">color</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.draw_boundingbox_rot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.get_annotation_from_id">
+<code class="sig-name descname">get_annotation_from_id</code><span class="sig-paren">(</span><em class="sig-param">annotation_id</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.get_annotation_from_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the annotation from an id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>annotation_id</strong> (<em>int</em>) – frame id</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of annotations for the id given as parameter</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.get_from_timestamp">
+<code class="sig-name descname">get_from_timestamp</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">get_sensors=True</em>, <em class="sig-param">get_annotations=True</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.get_from_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>method to get sensor and annotation information from some timestamp</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>float</em>) – This is the timestamp which access the sensors/annotations</p></li>
+<li><p><strong>get_sensors</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to retrieve sensor information, defaults to True</p></li>
+<li><p><strong>get_annotations</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to retrieve annotation info, defaults to True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns a single variable as a dictionary with ‘sensors’ and ‘annotations’ as key</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.get_id">
+<code class="sig-name descname">get_id</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">all_timestamps</em>, <em class="sig-param">time_offset=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.get_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the closest id given the timestamp</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>float</em>) – timestamp in seconds</p></li>
+<li><p><strong>all_timestamps</strong> (<em>np.array</em>) – a list with all timestamps</p></li>
+<li><p><strong>time_offset</strong> (<em>float</em><em>, </em><em>optional</em>) – offset in case there is some unsynchronoised sensor, defaults to 0.0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the closest id</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.get_lidar_annotations">
+<code class="sig-name descname">get_lidar_annotations</code><span class="sig-paren">(</span><em class="sig-param">id_radar</em>, <em class="sig-param">interp=False</em>, <em class="sig-param">t_c=None</em>, <em class="sig-param">t_r1=None</em>, <em class="sig-param">t_r2=None</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.get_lidar_annotations" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the annotations in lidar image coordinate frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id_radar</strong> (<em>int</em>) – the annotation radar id</p></li>
+<li><p><strong>interp</strong> (<em>bool</em>) – whether to use interpolation or not</p></li>
+<li><p><strong>t</strong> (<em>float</em>) – timestamp</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the annotations in lidar image coordinate frame</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.get_rectfied">
+<code class="sig-name descname">get_rectfied</code><span class="sig-paren">(</span><em class="sig-param">left_im</em>, <em class="sig-param">right_im</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.get_rectfied" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the left and right image rectfied</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left_im</strong> (<em>np.array</em>) – raw left image</p></li>
+<li><p><strong>right_im</strong> (<em>np.array</em>) – raw right image</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple (left_rect, right_rect, disp_to_depth)
+WHERE
+np.array left_rect is the rectfied left image
+np.array right_rect is the rectfied right image
+np.array disp_to_depth is a matrix that converts the disparity values to distance in meters</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.lidar_to_image">
+<code class="sig-name descname">lidar_to_image</code><span class="sig-paren">(</span><em class="sig-param">lidar</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.lidar_to_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert an lidar point cloud to an 2d bird’s eye view image</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lidar</strong> (<em>np.array</em>) – lidar point cloud Nx5 (x,y,z, intensity, ring)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2d bird’s eye image with the lidar information</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.load_timestamp">
+<code class="sig-name descname">load_timestamp</code><span class="sig-paren">(</span><em class="sig-param">timestamp_path</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.load_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>load all timestamps from a sensor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timestamp_path</strong> (<em>string</em>) – path to text file with all timestamps</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of all timestamps</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.overlay_camera_lidar">
+<code class="sig-name descname">overlay_camera_lidar</code><span class="sig-paren">(</span><em class="sig-param">camera</em>, <em class="sig-param">lidar</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.overlay_camera_lidar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that joins camera and projected lidar in one image for visualisation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>camera</strong> (<em>np.array</em>) – camera image</p></li>
+<li><p><strong>lidar</strong> (<em>np.array</em>) – lidar image with the same size as camera</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>overlayed image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.project_bboxes_to_camera">
+<code class="sig-name descname">project_bboxes_to_camera</code><span class="sig-paren">(</span><em class="sig-param">annotations</em>, <em class="sig-param">intrinsict</em>, <em class="sig-param">extrinsic</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.project_bboxes_to_camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>method to project the bounding boxes to the camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>annotations</strong> (<em>list</em>) – the annotations for the current frame</p></li>
+<li><p><strong>intrinsict</strong> (<em>np.array</em>) – intrisic camera parameters</p></li>
+<li><p><strong>extrinsic</strong> (<em>np.array</em>) – extrinsic parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary with the list of bbounding boxes with camera coordinate frames</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.project_lidar">
+<code class="sig-name descname">project_lidar</code><span class="sig-paren">(</span><em class="sig-param">lidar</em>, <em class="sig-param">lidar_extrinsics</em>, <em class="sig-param">cam_intrinsic</em>, <em class="sig-param">color_mode='same'</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.project_lidar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to project the lidar into the camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lidar</strong> (<em>np.array</em>) – lidar point cloud with shape Nx5 (x,y,z,intensity,ring)</p></li>
+<li><p><strong>lidar_extrinsics</strong> (<em>np.array</em>) – 4x4 matrix with lidar extrinsic parameters (Rotation
+and translations)</p></li>
+<li><p><strong>cam_intrinsic</strong> (<em>np.array</em>) – 3x3 matrix with camera intrinsic parameters in the form
+[[fx 0 cx],
+[0 fx cy],
+[0 0 1]]</p></li>
+<li><p><strong>color_mode</strong> (<em>string</em>) – what type of information is going to be representend in the lidar image</p></li>
+</ul>
+</dd>
+</dl>
+<p>options: ‘same’ always constant color. ‘pseudo_distance’: uses a color map to create a psedo
+color which refers to the distance. ‘distance’ creates an image with the actual distance as float</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns the projected lidar into the respective camera with the same size as the camera</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.read_lidar">
+<code class="sig-name descname">read_lidar</code><span class="sig-paren">(</span><em class="sig-param">lidar_path</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.read_lidar" title="Permalink to this definition">¶</a></dt>
+<dd><p>given a lidar raw path returns it lidar point cloud</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lidar_path</strong> (<em>string</em>) – path to lidar raw point</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>lidar point cloud Nx5 (x,y,z,intensity,ring)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.transform_annotations">
+<code class="sig-name descname">transform_annotations</code><span class="sig-paren">(</span><em class="sig-param">annotations</em>, <em class="sig-param">M</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.transform_annotations" title="Permalink to this definition">¶</a></dt>
+<dd><p>method to transform the annotations to annother coordinate</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>annotations</strong> (<em>list</em>) – the list of annotations</p></li>
+<li><p><strong>M</strong> (<em>np.array</em>) – transformation matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the list of annotations in another coodinate frame</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.transform_point_cloud">
+<code class="sig-name descname">transform_point_cloud</code><span class="sig-paren">(</span><em class="sig-param">pc</em>, <em class="sig-param">M</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.transform_point_cloud" title="Permalink to this definition">¶</a></dt>
+<dd><p>transform a 3d point cloud to another coordinate frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pc</strong> (<em>np.array</em>) – point cloud in the form Nx% (x,y,z,intensity, ring)</p></li>
+<li><p><strong>M</strong> (<em>np.array</em>) – transformation matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>transformed point cloud</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.vis">
+<code class="sig-name descname">vis</code><span class="sig-paren">(</span><em class="sig-param">sensor</em>, <em class="sig-param">objects</em>, <em class="sig-param">color=None</em>, <em class="sig-param">mode='rot'</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.vis" title="Permalink to this definition">¶</a></dt>
+<dd><p>visualise the sensor and its annotation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sensor</strong> (<em>the given sensor</em>) – </p></li>
+<li><p><strong>objects</strong> (<em>list of objects</em>) – np.array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>image with the objects overlayed</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.vis_3d_bbox_cam">
+<code class="sig-name descname">vis_3d_bbox_cam</code><span class="sig-paren">(</span><em class="sig-param">image</em>, <em class="sig-param">bboxes_3d</em>, <em class="sig-param">pc_size=0.7</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.vis_3d_bbox_cam" title="Permalink to this definition">¶</a></dt>
+<dd><p>diplay pseudo 3d bounding box from camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>np.array</em>) – camera which the bounding box is going to be projected</p></li>
+<li><p><strong>bboxes_3d</strong> (<em>dict</em>) – list of bounding box information with pseudo-3d image coordinate frame</p></li>
+<li><p><strong>pc_size</strong> (<em>float</em>) – percentage of the size of the bounding box [0.0 1.0]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>camera image with the correspondent bounding boxes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.vis_all">
+<code class="sig-name descname">vis_all</code><span class="sig-paren">(</span><em class="sig-param">output</em>, <em class="sig-param">wait_time=1</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.vis_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>method to diplay all the sensors/annotations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output</strong> (<em>dict</em>) – gets the output from self.get_from_timestamp(t)</p></li>
+<li><p><strong>wait_time</strong> (<em>int</em><em>, </em><em>optional</em>) – how to long to wait until display next frame. 0 means it will wait for any key, defaults to 1</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="radiate.Sequence.vis_bbox_cam">
+<code class="sig-name descname">vis_bbox_cam</code><span class="sig-paren">(</span><em class="sig-param">image</em>, <em class="sig-param">bboxes_3d</em>, <em class="sig-param">pc_size=0.7</em><span class="sig-paren">)</span><a class="headerlink" href="#radiate.Sequence.vis_bbox_cam" title="Permalink to this definition">¶</a></dt>
+<dd><p>diplay pseudo 2d bounding box from camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>np.array</em>) – camera which the bounding box is going to be projected</p></li>
+<li><p><strong>bboxes_3d</strong> (<em>dict</em>) – list of bounding box information with pseudo-3d image coordinate frame</p></li>
+<li><p><strong>pc_size</strong> (<em>float</em>) – percentage of the size of the bounding box [0.0 1.0]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>camera image with the correspondent bounding boxes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="modules.html" class="btn btn-neutral float-left" title="radiate_sdk" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Marcel Sheeny
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
