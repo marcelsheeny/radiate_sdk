@@ -21,30 +21,19 @@ for extreme weather. The images can be seriously blurred, hazy or fully blocked 
 ![](assets/folder_tree.png)
 
 * **GPS_IMU_Twist**: We provide a readable *.txt* file. Each line is shown below:
-  
-  | 
-  
     GPS-IMU file format:
-
+    ```
     Line1: Latitude, Longitude, Altitude (in degrees)
-
     Line [2-4]: GPS position_covariance (3x3)
-
     Line 5: IMU.Orientation.X IMU.Orientation.Y IMU.Orientation.Z IMU.Orientation.W (Quaternion)
-
     Line 6: IMU.AngularVelocity.X IMU.AngularVelocity.Y IMU.AngularVelocity.Z 
-
     Line 7: IMU.LinearAccelaration.X IMU.LinearAccelaration.Y IMU.LinearAccelaration.Z
-
     Line [8-10]: IMU.Orientation Covariance (3x3)
-
     Line [11-13]: IMU.AngularVelocity Covariance (3x3)
-
     Line [14-16]:IMU.LinearAccelaration Covariance (3x3)
-
     Line 17: Twist.Linear.X, Twist.Linear.Y, Twist.Linear.Z
-
     Line 18: Twist.Angular.X, Twist.Angular.Y, Twist.Angular.Z
+    ```
 
 
 * **Navtech_Polar**: We provide *.png* with resolution 400 x 576. Where each row represents the range with resolution 0.17361 m. And each column represents the angle with resolution 1.1°.
