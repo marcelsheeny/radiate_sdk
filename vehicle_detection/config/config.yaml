@@ -1,0 +1,59 @@
+# name of timestamp files
+radar_timestamp_file: 'Navtech_Cartesian.txt'
+lidar_timestamp_file: 'velo_lidar.txt'
+camera_timestamp_file: 'zed_left.txt'
+
+# whether to use or not some sensors
+use_camera_left_raw: False
+use_camera_right_raw: False
+use_camera_left_rect: False
+use_camera_right_rect: True
+use_radar_polar: False
+use_radar_cartesian: True
+use_lidar_pc: False
+use_lidar_image: False
+use_proj_lidar_left: False
+use_proj_lidar_right: False
+
+# whether to interpolate bounding boxes or not
+interpolate_bboxes: True
+
+# sensors height for projecting 2d BEV to 3D
+sensors_height: -1.8
+max_range_bbox_camera: 100   # in meters
+
+# params to lidar projected to camera
+lidar_proj:
+    max_dist: 80
+    remove_ground: False
+    ground_thresh: 1.5
+    color_mode: 'same'   # 'same', 'pseudo_distance', 'distance'
+
+
+# width and height resolution of a bird's eye view lidar image
+lidar_image:
+    res: [1152, 1152]
+    remove_ground: True
+    ground_thresh: 1.5
+    use_ring: True
+    use_intensity: False
+
+# time synchronisation between sensors in seconds
+sync:
+    lidar: 0.25
+    camera: 0.25
+    radar: 0.0
+
+
+# Calibration parameters
+radar_calib:
+    T: [0.0, 0.0, 0.0]
+    R: [0.0, 0.0, 0.0]
+    range_res: 0.173611
+    range_cells: 576
+    azimuth_cells: 400
+
+calib_file: 'config/default-calib.yaml'
+
+
+    
