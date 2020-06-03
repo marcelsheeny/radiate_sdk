@@ -65,7 +65,7 @@ Software development kit (SDK) to use the RADIATE dataset. The SDK was tested us
 
 Run `demo.py` to visualise the dataset.
 
-### Depencies
+### Dependencies
 ```
 matplotlib
 opencv-python
