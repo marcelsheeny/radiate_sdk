@@ -59,7 +59,18 @@ Software development kit (SDK) to use the RADIATE dataset. The SDK was tested us
 
 ## Installation
 
-'pip install -r requirements.txt'
+`git clone https://github.com/marcelsheeny/radiate_sdk.git`
+
+`pip install -r requirements.txt`
+
+### Depencies
+```
+matplotlib
+opencv-python
+pandas
+numpy
+pyyaml
+```
 
 ## How to use
 
