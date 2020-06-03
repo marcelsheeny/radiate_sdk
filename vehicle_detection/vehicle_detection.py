@@ -17,22 +17,21 @@ import os
 
 # radiate sdk
 import sys
-# sys.path.insert(0, '/media/marcel/df5725dc-6216-424d-842c-30fff5c71c5d/Dropbox/RES_EPS_PathCad/marcel/radar/navtech/radiate_sdk')
-sys.path.insert(0, '../radiate_sdk')
+sys.path.insert(0, '..')
 import radiate
 
 # path to the sequence
-root_path = '../../../../datasets/radiate/'
-sequence_name = 'city_3_7'
+root_path = '../data/radiate/'
+sequence_name = 'fog_6_0'
 
 network = 'faster_rcnn_R_101_FPN_3x'
 setting = 'good_and_bad_weather_radar'
 
 # time (s) to retrieve next frame
-dt = 0.1
+dt = 0.25
 
 # load sequence
-seq = radiate.Sequence(os.path.join(root_path, sequence_name))
+seq = radiate.Sequence(os.path.join(root_path, sequence_name), config_file='../config/config.yaml')
 
 cfg = get_cfg()
 # add project-specific config (e.g., TensorMask) here if you're not running a model in detectron2's core library
@@ -49,33 +48,34 @@ cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]
 predictor = DefaultPredictor(cfg)
 for t in np.arange(seq.init_timestamp, seq.end_timestamp, dt):
     output = seq.get_from_timestamp(t)
-    radar = output['sensors']['radar_cartesian']
-    camera = output['sensors']['camera_right_rect']
-    predictions = predictor(radar)
-   
-    predictions = predictions["instances"].to("cpu")
-    boxes = predictions.pred_boxes 
+    if output != {}:
+        radar = output['sensors']['radar_cartesian']
+        camera = output['sensors']['camera_right_rect']
+        predictions = predictor(radar)
+    
+        predictions = predictions["instances"].to("cpu")
+        boxes = predictions.pred_boxes 
 
-    objects = []
+        objects = []
 
-    for box in boxes:
-        if cfg.MODEL.PROPOSAL_GENERATOR.NAME == 'RRPN':
-            bb, angle = box.numpy()[:4], box.numpy()[4]        
-        else:
-            bb, angle = box.numpy(), 0   
-            bb[2] = bb[2] - bb[0]
-            bb[3] = bb[3] - bb[1]
-        objects.append({'bbox': {'position': bb, 'rotation': angle}, 'class_name': 'vehicle'})
-        
-    radar = seq.vis(radar, objects, color=(255,0,0))
-    bboxes_cam = seq.project_bboxes_to_camera(objects,
-                                             seq.calib.right_cam_mat,
-                                             seq.calib.RadarToRight)
-    # camera = seq.vis_3d_bbox_cam(camera, bboxes_cam)
-    camera = seq.vis_bbox_cam(camera, bboxes_cam)
+        for box in boxes:
+            if cfg.MODEL.PROPOSAL_GENERATOR.NAME == 'RRPN':
+                bb, angle = box.numpy()[:4], box.numpy()[4]        
+            else:
+                bb, angle = box.numpy(), 0   
+                bb[2] = bb[2] - bb[0]
+                bb[3] = bb[3] - bb[1]
+            objects.append({'bbox': {'position': bb, 'rotation': angle}, 'class_name': 'vehicle'})
+            
+        radar = seq.vis(radar, objects, color=(255,0,0))
+        bboxes_cam = seq.project_bboxes_to_camera(objects,
+                                                seq.calib.right_cam_mat,
+                                                seq.calib.RadarToRight)
+        # camera = seq.vis_3d_bbox_cam(camera, bboxes_cam)
+        camera = seq.vis_bbox_cam(camera, bboxes_cam)
 
-    cv2.imshow('radar', radar)
-    cv2.imshow('camera_right_rect', camera)
-    cv2.waitKey(1)
+        cv2.imshow('radar', radar)
+        cv2.imshow('camera_right_rect', camera)
+        cv2.waitKey(1)
     
 

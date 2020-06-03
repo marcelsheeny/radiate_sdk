@@ -664,7 +664,7 @@ class Sequence:
                 draw_color = self.colors[class_name]
             if mode == 'rot':
                 sensor_vis = self.draw_boundingbox_rot(
-                    sensor_vis, bbox, angle, draw_color)
+                    sensor_vis, bbox, angle, color)
 
         return sensor_vis
 
