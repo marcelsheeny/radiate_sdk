@@ -63,6 +63,8 @@ Software development kit (SDK) to use the RADIATE dataset. The SDK was tested us
 
 `pip install -r requirements.txt`
 
+Run `demo.py` to visualise the dataset.
+
 ### Depencies
 ```
 matplotlib
