@@ -22,28 +22,35 @@ for extreme weather. The images can be seriously blurred, hazy or fully blocked 
 
 * **GPS_IMU_Twist**: We provide a readable *.txt* file. Each line is shown below:
   
+  | 
+  
     GPS-IMU file format:
 
-    Latitude Longitude Altitude
+    Line1: Latitude, Longitude, Altitude (in degrees)
 
-    GPS position_covariance (3x3)
+    Line [2-4]: GPS position_covariance (3x3)
 
-    IMU.Orientation.X IMU.Orientation.Y IMU.Orientation.Z IMU.Orientation.W
+    Line 5: IMU.Orientation.X IMU.Orientation.Y IMU.Orientation.Z IMU.Orientation.W (Quaternion)
 
-    IMU.AngularVelocity.X IMU.AngularVelocity.Y IMU.AngularVelocity.Z
+    Line 6: IMU.AngularVelocity.X IMU.AngularVelocity.Y IMU.AngularVelocity.Z 
 
-    IMU.LinearAccelaration.X IMU.LinearAccelaration.Y IMU.LinearAccelaration.Z
+    Line 7: IMU.LinearAccelaration.X IMU.LinearAccelaration.Y IMU.LinearAccelaration.Z
 
-    IMU.Orientation Covariance (3x3)
+    Line [8-10]: IMU.Orientation Covariance (3x3)
 
-    IMU.AngularVelocity Covariance (3x3)
+    Line [11-13]: IMU.AngularVelocity Covariance (3x3)
 
-    IMU.LinearAccelaration Covariance (3x3)
+    Line [14-16]:IMU.LinearAccelaration Covariance (3x3)
+
+    Line 17: Twist.Linear.X, Twist.Linear.Y, Twist.Linear.Z
+
+    Line 18: Twist.Angular.X, Twist.Angular.Y, Twist.Angular.Z
+
 
 * **Navtech_Polar**: We provide *.png* with resolution 400 x 576. Where each row represents the range with resolution 0.17361 m. And each column represents the angle with resolution 1.1°.
 
 * **Navtech_Cartesian**: We provide *.png* with resolution 1152 x 1152. This is a implementation from polar to cartesian. We use nearest neighbor interpolation. The each pixel represents a 0.17361 m x 0.17361 m.
-*  **velo_lidar**: We provide readable *.txt* files where each line represents x,y,z,intensity,ring. (x,y,z) represents the 3D point cloud in the lidar frame. Intensity [0-255] is reflectance captured by the sensor. Ring [1-32] means from each of the 32 channels the detected point came from.
+*  **velo_lidar**: We provide readable *.txt* files where each line represents `x,y,z,intensity,ring`. (x,y,z) represents the 3D point cloud in the lidar frame. Intensity [0-255] is reflectance captured by the sensor. Ring [0-31] means from each of the 32 channels the detected point came from.
 *  **zed_left/right**: We provide *.png* unrectified images with resolution 672 × 376. 
   
 Each folder contains a *FOLDER.txt* which shows the timestamp for each collected frame. The format is Frame: XXXXXX Time: XXXXXX. Where frame is the frame ID which correspond to the filename. Time is the timestamp using UNIX time system in seconds.
