@@ -1,4 +1,7 @@
 radiate_sdk
 ===========
 
-radiate
+.. toctree::
+   :maxdepth: 4
+
+   radiate
