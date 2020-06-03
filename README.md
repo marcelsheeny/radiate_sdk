@@ -93,7 +93,7 @@ The file 'config/config.yaml' controls which sensors to use and configure their 
 
 The file `demo.py` contains a small code which just display the annotations.
 
-```
+```python
 import radiate
 import numpy as np
 import os
