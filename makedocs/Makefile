@@ -19,4 +19,6 @@ help:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-	mv $(BUILDDIR)/html/* $(BUILDDIR)/
+	@touch $(BUILDDIR)/.nojekyll
+
+	@cp -a $(BUILDDIR)/html/* $(BUILDDIR)/
