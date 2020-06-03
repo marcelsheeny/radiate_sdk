@@ -1,0 +1,22 @@
+\indexentry{radiate (module)@\spxentry{radiate}\spxextra{module}|hyperpage}{1}
+\indexentry{Sequence (class in radiate)@\spxentry{Sequence}\spxextra{class in radiate}|hyperpage}{1}
+\indexentry{cfar() (radiate.Sequence method)@\spxentry{cfar()}\spxextra{radiate.Sequence method}|hyperpage}{1}
+\indexentry{cfar2d() (radiate.Sequence method)@\spxentry{cfar2d()}\spxextra{radiate.Sequence method}|hyperpage}{1}
+\indexentry{draw\_boundingbox\_rot() (radiate.Sequence method)@\spxentry{draw\_boundingbox\_rot()}\spxextra{radiate.Sequence method}|hyperpage}{2}
+\indexentry{get\_annotation\_from\_id() (radiate.Sequence method)@\spxentry{get\_annotation\_from\_id()}\spxextra{radiate.Sequence method}|hyperpage}{2}
+\indexentry{get\_from\_timestamp() (radiate.Sequence method)@\spxentry{get\_from\_timestamp()}\spxextra{radiate.Sequence method}|hyperpage}{2}
+\indexentry{get\_id() (radiate.Sequence method)@\spxentry{get\_id()}\spxextra{radiate.Sequence method}|hyperpage}{2}
+\indexentry{get\_lidar\_annotations() (radiate.Sequence method)@\spxentry{get\_lidar\_annotations()}\spxextra{radiate.Sequence method}|hyperpage}{2}
+\indexentry{get\_rectfied() (radiate.Sequence method)@\spxentry{get\_rectfied()}\spxextra{radiate.Sequence method}|hyperpage}{2}
+\indexentry{lidar\_to\_image() (radiate.Sequence method)@\spxentry{lidar\_to\_image()}\spxextra{radiate.Sequence method}|hyperpage}{3}
+\indexentry{load\_timestamp() (radiate.Sequence method)@\spxentry{load\_timestamp()}\spxextra{radiate.Sequence method}|hyperpage}{3}
+\indexentry{overlay\_camera\_lidar() (radiate.Sequence method)@\spxentry{overlay\_camera\_lidar()}\spxextra{radiate.Sequence method}|hyperpage}{3}
+\indexentry{project\_bboxes\_to\_camera() (radiate.Sequence method)@\spxentry{project\_bboxes\_to\_camera()}\spxextra{radiate.Sequence method}|hyperpage}{3}
+\indexentry{project\_lidar() (radiate.Sequence method)@\spxentry{project\_lidar()}\spxextra{radiate.Sequence method}|hyperpage}{3}
+\indexentry{read\_lidar() (radiate.Sequence method)@\spxentry{read\_lidar()}\spxextra{radiate.Sequence method}|hyperpage}{4}
+\indexentry{transform\_annotations() (radiate.Sequence method)@\spxentry{transform\_annotations()}\spxextra{radiate.Sequence method}|hyperpage}{4}
+\indexentry{transform\_point\_cloud() (radiate.Sequence method)@\spxentry{transform\_point\_cloud()}\spxextra{radiate.Sequence method}|hyperpage}{4}
+\indexentry{vis() (radiate.Sequence method)@\spxentry{vis()}\spxextra{radiate.Sequence method}|hyperpage}{4}
+\indexentry{vis\_3d\_bbox\_cam() (radiate.Sequence method)@\spxentry{vis\_3d\_bbox\_cam()}\spxextra{radiate.Sequence method}|hyperpage}{4}
+\indexentry{vis\_all() (radiate.Sequence method)@\spxentry{vis\_all()}\spxextra{radiate.Sequence method}|hyperpage}{5}
+\indexentry{vis\_bbox\_cam() (radiate.Sequence method)@\spxentry{vis\_bbox\_cam()}\spxextra{radiate.Sequence method}|hyperpage}{5}

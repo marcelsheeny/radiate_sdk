@@ -111,3 +111,6 @@ In order to get the annotation values, the variable 'output' is a dictionary wit
 'bbox':{'position': [603.5340471042896, 149.7590074419735, 26.620884098218767, 73.56976270380676], 'rotation': 177.69489304897752}
 __len__:3
 ```
+
+The documentation of all radiate methods can be seen at:
+https://marcelsheeny.github.io/radiate_sdk/radiate.html
