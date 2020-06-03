@@ -23,7 +23,7 @@ for extreme weather. The images can be seriously blurred, hazy or fully blocked 
 * **GPS_IMU_Twist**: We provide a readable *.txt* file. Each line is shown below:
     GPS-IMU file format:
     ```
-    Line1: Latitude, Longitude, Altitude (in degrees)
+    Line 1: Latitude, Longitude, Altitude (in degrees)
     Line [2-4]: GPS position_covariance (3x3)
     Line 5: IMU.Orientation.X IMU.Orientation.Y IMU.Orientation.Z IMU.Orientation.W (Quaternion)
     Line 6: IMU.AngularVelocity.X IMU.AngularVelocity.Y IMU.AngularVelocity.Z 
