@@ -60,7 +60,9 @@ Software development kit (SDK) to use the RADIATE dataset. The SDK was tested us
 ## Installation
 
 `git clone https://github.com/marcelsheeny/radiate_sdk.git`
+
 `cd radiate_sdk`
+
 `pip install -r requirements.txt`
 
 Run `demo.py` to visualise the dataset.
