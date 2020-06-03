@@ -66,7 +66,7 @@ for extreme weather. The images can be seriously blurred, hazy or fully blocked 
   
     | Left Camera | Right Camera|
     |:------:|:-------:|
-    |![](assests/left.png)|![](assests/right.png)|
+    |![](assets/left.png)|![](assets/right.png)|
   
 * **Timestamps**: Each folder contains a `FOLDER.txt` which shows the timestamp for each collected frame. The format is:
 
