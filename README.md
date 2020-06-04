@@ -36,7 +36,7 @@ The size of each scenario can be visualised below:
 
 ## Comparison with other datasets
 
-RADIATE is the first public high resolution radar dataset which includes a large number of labelled road actors on public roads. It  includes  multi-modal  sensor  data  collected  in  challenging  weather  conditions,  such  as dense  fog  and  heavy  snowfall.  Camera,  LiDAR  and  GPS  data  are  also  provided  for  all sequences. The table below shows a comparison with other relevant automotive datasets with radar ([NuScenes]((https://www.nuscenes.org/)), [Oxford Radar RobotCar](https://ori.ox.ac.uk/oxford-radar-robotcar-dataset/), [MulRan](https://sites.google.com/view/mulran-pr/dataset) and [Astyx](https://www.astyx.com/development/astyx-hires2019-dataset.html))
+RADIATE is the first public high resolution radar dataset which includes a large number of labelled road actors on public roads. It  includes  multi-modal  sensor  data  collected  in  challenging  weather  conditions,  such  as dense  fog  and  heavy  snowfall.  Camera,  LiDAR  and  GPS  data  are  also  provided  for  all sequences. The table below shows a comparison with other relevant automotive datasets with radar ([NuScenes](https://www.nuscenes.org/), [Oxford Radar RobotCar](https://ori.ox.ac.uk/oxford-radar-robotcar-dataset/), [MulRan](https://sites.google.com/view/mulran-pr/dataset) and [Astyx](https://www.astyx.com/development/astyx-hires2019-dataset.html))
 
 ![](assets/comparison.png)
 
