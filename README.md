@@ -158,7 +158,6 @@ stereo_calib:
 The annotation is a *.json* file. where each entry of a list contains `id,class_name,bboxes`. `id` is the object identification. `class_name` is a string with the name class. `bboxes` contains `position`: `(x,y,width,height)` where `(x,y)` is the upper-left pixel locations of the bounding box, of given width and height. And `rotation` is the angle in degrees using counter-clockwise.
 
 Example:
-
 ![](assets/annotations.png)
 
 # RADIATE SDK

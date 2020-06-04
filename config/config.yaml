@@ -16,7 +16,7 @@ use_proj_lidar_left: False
 use_proj_lidar_right: True
 
 # wheter to save the images
-save_images: False
+save_images: True
 output_folder: 'saved_images'
 
 # whether to interpolate bounding boxes or not
