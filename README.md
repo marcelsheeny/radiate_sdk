@@ -162,7 +162,7 @@ Example:
 
 # RADIATE SDK
 
-Software development kit (SDK) to use the RADIATE dataset. The SDK was tested using Python 3.7 and 3.8. The SDK is used for data calibration, visualisation, and pre-processing. Example below of information which can be retrieved from the SDK.
+Software development kit (SDK) to use the RADIATE dataset. The SDK works with Python 3.7 or greater. The SDK is used for data calibration, visualisation, and pre-processing. Example below of information which can be retrieved from the SDK.
 
 ![](assets/weather_radiate.png)
 
