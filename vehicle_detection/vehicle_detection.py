@@ -40,6 +40,7 @@ cfg.MODEL.DEVICE = 'cpu'
 cfg.MODEL.WEIGHTS = os.path.join('weights',  network +'_' + setting + '.pth')
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1  # only has one class (vehicle)
 cfg.MODEL.ROI_HEADS.NMS_THRESH_TEST = 0.2
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
 cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]
 predictor = DefaultPredictor(cfg)
 

@@ -660,8 +660,7 @@ class Sequence:
             angle = object['bbox']['rotation']
         
             class_name = object['class_name']
-            if color == None:
-                color = self.colors[class_name]
+            color = self.colors[class_name]
             if mode == 'rot':
                 sensor_vis = self.draw_boundingbox_rot(
                     sensor_vis, bbox, angle, color)
