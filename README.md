@@ -4,10 +4,7 @@ RADIATE (RAdar Dataset In Adverse weaThEr) is new automotive dataset created by 
 
 We collected data in different weather scenarios (sunny, overcast, night, fog, rain and snow) to help the research community to develop new methods of vehicle perception
 
-![](assets/radiate.png)
-
 ## Table of contents
-
 - [RADIATE Dataset](#radiate-dataset)
   - [Table of contents](#table-of-contents)
   - [Dataset size](#dataset-size)
@@ -22,6 +19,11 @@ We collected data in different weather scenarios (sunny, overcast, night, fog, r
   - [How to use](#how-to-use)
     - [Example:](#example)
   - [Vehicle Detection](#vehicle-detection)
+
+
+
+![](assets/radiate.png)
+
 
 ## Dataset size
 
