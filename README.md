@@ -6,6 +6,41 @@ We collected data in different weather scenarios (sunny, overcast, night, fog, r
 
 ![](assets/radiate.png)
 
+## Table of contents
+
+- [RADIATE Dataset](#radiate-dataset)
+  - [Table of contents](#table-of-contents)
+  - [Dataset size](#dataset-size)
+  - [Comparison with other datasets](#comparison-with-other-datasets)
+  - [Sensors](#sensors)
+  - [Folder Structure and File Format](#folder-structure-and-file-format)
+  - [Sensor Calibration](#sensor-calibration)
+  - [Annotation Structure](#annotation-structure)
+- [RADIATE SDK](#radiate-sdk)
+  - [Installation](#installation)
+    - [Dependencies](#dependencies)
+  - [How to use](#how-to-use)
+    - [Example:](#example)
+  - [Vehicle Detection](#vehicle-detection)
+
+## Dataset size
+
+We annotated the radar images in 7 different scenarios: 
+Sunny (Parked), Sunny/Overcast (Urban), Overcast (Motorway), Night (Motorway), Rain (Suburban), Fog (Suburban) and Snow (Suburban). We annotated 8 different types of objects (car, van, truck, bus, motorbike, bicycle, pedestrian and group of pedestrian). Below we show a graph with the number of individual instances labelled.
+![](assets/instances.png)
+
+The size of each scenario can be visualised below:
+
+![](assets/dataset_lenght.png)
+
+## Comparison with other datasets
+
+RADIATE is the first public high resolution radar dataset which includes a large number of labelled road actors on public roads. It  includes  multi-modal  sensor  data  collected  in  challenging  weather  conditions,  such  as dense  fog  and  heavy  snowfall.  Camera,  LiDAR  and  GPS  data  are  also  provided  for  all sequences. The table below shows a comparison with other relevant automotive datasets with radar ([NuScenes]((https://www.nuscenes.org/)), [Oxford Radar RobotCar](https://ori.ox.ac.uk/oxford-radar-robotcar-dataset/), [MulRan](https://sites.google.com/view/mulran-pr/dataset) and [Astyx](https://www.astyx.com/development/astyx-hires2019-dataset.html))
+
+![](assets/comparison.png)
+
+
+
 ## Sensors
 
 ![](assets/sensors.png)
@@ -237,3 +272,28 @@ In order to get the annotation values, the variable 'output' is a dictionary wit
 
 The documentation of all radiate methods can be seen at:
 https://marcelsheeny.github.io/radiate_sdk/radiate.html
+
+## Vehicle Detection
+
+As first baseline, we have performed evaluation of vehicle detection from single images. We defined a vehicle as one of the following classes: car, van, truck, bus, motorbike and bicycle.
+
+We adopted the popular Faster R-CNN [29] architecture to demonstrate the use of RADIATE for radar based object detection. Two modifications were made to the original architecture to better suit radar detection:
+
+* Pre-defined sizes were used for anchor generation because vehicle volumes are typically well-known and radar images provide metric scales, different from camera images.
+* We modified the Region Proposal Network (RPN) from Faster R-CNN to output the bounding box and a rotation angle which the bounding boxes are represented by x, y, width, height, angle.
+  
+To investigate the impact of weather conditions, the models were trained with the 2 different training datasets: data from only good and data from both good and bad weather. ResNet-50 and ResNet-101 were chosen as backbone models. The trained models were tested on a test set
+collected from all weather conditions and driving scenarios. The metric used for evaluation was Average Precision with Intersection over Union (IoU) equal to 0.5, which is the same as the PASCAL VOC and DOTA evaluation metric.
+
+Below we can visualise a table with the results for each scenario and the Precision Recall curve for each network trained.
+
+![](assets/ap.png)
+
+![](assets/prec_rec.png)
+
+The figure bellow illustrates some qualitative results
+of radar based vehicle detection in various driving scenarios and weather conditions, using Faster R-CNN ResNet-101 trained in good weather only.
+
+![](assets/results_example.png)
+
+The code and the trained weights from radar based vehicle detection can be seen at [https://github.com/marcelsheeny/radiate_sdk/tree/master/vehicle_detection](https://github.com/marcelsheeny/radiate_sdk/tree/master/vehicle_detection)
