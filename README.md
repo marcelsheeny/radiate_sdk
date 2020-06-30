@@ -21,7 +21,7 @@ We collected data in different weather scenarios (sunny, overcast, night, fog, r
 
 
 
-![](assets/radiate.png){}
+![](assets/radiate.png)
 
 
 ## Dataset size
