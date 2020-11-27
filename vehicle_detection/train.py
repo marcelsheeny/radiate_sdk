@@ -38,6 +38,10 @@ parser.add_argument("--max_iter", help="Maximum number of iterations",
                     default=90000,
                     type=int)
 
+parser.add_argument("--resume", help="Whether to resume training or not",
+                    default=False,
+                    type=bool)
+
 parser.add_argument("--dataset_mode", help="dataset mode ('good_weather', 'good_and_bad_weather')",
                     default='good_weather',
                     type=str)
@@ -46,6 +50,7 @@ parser.add_argument("--dataset_mode", help="dataset mode ('good_weather', 'good_
 args = parser.parse_args()
 model_name = args.model_name
 root_dir = args.root_folder
+resume = args.resume
 dataset_mode = args.dataset_mode
 eval_every_n_iter = args.eval_every_n_iter
 max_iter = args.max_iter
@@ -106,6 +111,7 @@ def train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter):
                 record["image_id"] = idd
                 record["height"] = 1152
                 record["width"] = 1152
+
                 for object in annotation:
                     if (object['bboxes'][frame_number]):
                         class_obj = object['class_name']
@@ -168,13 +174,7 @@ def train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter):
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     trainer = DefaultTrainer(cfg)
 
-    validation_results_file = os.path.join(
-        cfg.OUTPUT_DIR, 'validation_results.json')
-    validation_results = {'validation_results': []}
-    with open(validation_results_file, 'w') as f:
-        json.dump(validation_results, f)
-
-    trainer.resume_or_load(resume=False)
+    trainer.resume_or_load(resume=resume)
     trainer.train()
 
 
