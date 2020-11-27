@@ -8,7 +8,7 @@ Use the [instructions](https://github.com/facebookresearch/detectron2/blob/maste
 
 ## Download weights
 
-Below are the table with the weights trained using radar only. We used Faster R-CNN with rectangular and rotated bounding boxes. We also provided training in both good and bad weather and in good weather only.
+Below are the table with the weights trained using radar only. We used Faster R-CNN with Horizontal and Oriented bounding boxes. We also provided training in both good and bad weather and in good weather only.
 The results (AP) are computed from the training set which contains both good and bad weather data.
 
 ### Horizontal Bounding Boxes
