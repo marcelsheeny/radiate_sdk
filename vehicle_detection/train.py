@@ -6,7 +6,8 @@ import json
 import numpy as np
 import os
 import random
-from detectron2.engine import DefaultTrainer
+from detectron2.engine import DefaultTrainer, hooks
+from utils.trainer import Trainer
 from detectron2.config import get_cfg
 from detectron2.utils.visualizer import ColorMode
 from detectron2.engine import DefaultPredictor
@@ -29,6 +30,10 @@ parser.add_argument("--max_iter", help="Maximum number of iterations",
                     default=90000,
                     type=int)
 
+parser.add_argument("--eval_every_n_iter", help="Evaluate every N iterations",
+                    default=2500,
+                    type=int)
+
 parser.add_argument("--resume", help="Whether to resume training or not",
                     default=False,
                     type=bool)
@@ -44,9 +49,10 @@ root_dir = args.root_folder
 resume = args.resume
 dataset_mode = args.dataset_mode
 max_iter = args.max_iter
+eval_every_n_iter = args.eval_every_n_iter
 
 
-def train(model_name, root_dir, dataset_mode, max_iter):
+def train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter):
 
     # output folder to save models
     output_dir = os.path.join('train_results', model_name + '_' + dataset_mode)
@@ -54,6 +60,7 @@ def train(model_name, root_dir, dataset_mode, max_iter):
 
     # get folders depending on dataset_mode
     folders_train = []
+    folders_valid = []
     for curr_dir in os.listdir(root_dir):
         with open(os.path.join(root_dir, curr_dir, 'meta.json')) as f:
             meta = json.load(f)
@@ -61,6 +68,8 @@ def train(model_name, root_dir, dataset_mode, max_iter):
             folders_train.append(curr_dir)
         elif meta["set"] == "train_good_and_bad_weather" and dataset_mode == "good_and_bad_weather":
             folders_train.append(curr_dir)
+        elif meta["set"] == "test":
+            folders_valid.append(curr_dir)
 
     def gen_boundingbox(bbox, angle):
         theta = np.deg2rad(-angle)
@@ -150,7 +159,7 @@ def train(model_name, root_dir, dataset_mode, max_iter):
         return dataset_dicts
 
     dataset_train_name = dataset_mode + '_train'
-    dataset_test_name = dataset_mode + '_test'
+    dataset_valid_name = dataset_mode + '_valid'
 
     DatasetCatalog.register(dataset_train_name,
                             lambda: get_radar_dicts(folders_train))
@@ -159,11 +168,17 @@ def train(model_name, root_dir, dataset_mode, max_iter):
 
     metadata = MetadataCatalog.get(dataset_train_name)
 
+    DatasetCatalog.register(dataset_valid_name,
+                            lambda: get_radar_dicts(folders_valid))
+    MetadataCatalog.get(dataset_valid_name).set(thing_classes=["vehicle"])
+    MetadataCatalog.get(dataset_valid_name).evaluator_type = "coco"
+
     cfg_file = os.path.join('test', 'config', model_name + '.yaml')
     cfg = get_cfg()
     cfg.OUTPUT_DIR = output_dir
     cfg.merge_from_file(cfg_file)
     cfg.DATASETS.TRAIN = (dataset_train_name,)
+    cfg.DATASETS.TEST = (dataset_valid_name,)
     cfg.DATALOADER.NUM_WORKERS = 2
     cfg.SOLVER.IMS_PER_BATCH = 2
     cfg.SOLVER.STEPS: (25000, 35000)
@@ -175,11 +190,17 @@ def train(model_name, root_dir, dataset_mode, max_iter):
     cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]
 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
-    trainer = DefaultTrainer(cfg)
+    trainer = Trainer(cfg)
+    trainer.register_hooks(
+        [
+            hooks.EvalHook(eval_every_n_iter,
+                           lambda: trainer.evaluate(cfg, trainer.model)),
+        ]
+    )
 
     trainer.resume_or_load(resume=resume)
     trainer.train()
 
 
 if __name__ == "__main__":
-    train(model_name, root_dir, dataset_mode, max_iter)
+    train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter)
