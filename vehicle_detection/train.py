@@ -19,7 +19,7 @@ from detectron2.structures import BoxMode
 # init params
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_name", help="Model Name (Ex: faster_rcnn_R_50_FPN_3x)",
-                    default='retinanet_R_50_FPN_3x',
+                    default='faster_rcnn_R_50_FPN_3x',
                     type=str)
 
 parser.add_argument("--root_folder", help="root folder with radiate dataset",
