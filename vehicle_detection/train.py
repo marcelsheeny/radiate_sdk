@@ -14,11 +14,6 @@ from detectron2.utils.visualizer import Visualizer
 from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.structures import BoxMode
 
-# radiate sdk
-import sys
-sys.path.insert(0, '..')
-import radiate  # noqa
-
 
 # init params
 parser = argparse.ArgumentParser()
@@ -68,8 +63,21 @@ def train(model_name, root_dir, dataset_mode, max_iter):
             folders_train.append(curr_dir)
 
     def gen_boundingbox(bbox, angle):
+        theta = np.deg2rad(-angle)
+        R = np.array([[np.cos(theta), -np.sin(theta)],
+                      [np.sin(theta), np.cos(theta)]])
+        points = np.array([[bbox[0], bbox[1]],
+                           [bbox[0] + bbox[2], bbox[1]],
+                           [bbox[0] + bbox[2], bbox[1] + bbox[3]],
+                           [bbox[0], bbox[1] + bbox[3]]]).T
 
-        points = radiate.gen_boundingbox_rot(bbox, angle)
+        cx = bbox[0] + bbox[2] / 2
+        cy = bbox[1] + bbox[3] / 2
+        T = np.array([[cx], [cy]])
+
+        points = points - T
+        points = np.matmul(R, points) + T
+        points = points.astype(int)
 
         min_x = np.min(points[0, :])
         min_y = np.min(points[1, :])
