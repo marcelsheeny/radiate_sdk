@@ -30,10 +30,6 @@ parser.add_argument("--root_folder", help="root folder with radiate dataset",
                     default='../data/radiate/',
                     type=str)
 
-parser.add_argument("--eval_every_n_iter", help="Evaluate every N iterations",
-                    default=2500,
-                    type=int)
-
 parser.add_argument("--max_iter", help="Maximum number of iterations",
                     default=90000,
                     type=int)
@@ -52,11 +48,10 @@ model_name = args.model_name
 root_dir = args.root_folder
 resume = args.resume
 dataset_mode = args.dataset_mode
-eval_every_n_iter = args.eval_every_n_iter
 max_iter = args.max_iter
 
 
-def train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter):
+def train(model_name, root_dir, dataset_mode, max_iter):
 
     # output folder to save models
     output_dir = os.path.join('train_results', model_name + '_' + dataset_mode)
@@ -179,4 +174,4 @@ def train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter):
 
 
 if __name__ == "__main__":
-    train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter)
+    train(model_name, root_dir, dataset_mode, max_iter)
