@@ -1,19 +1,23 @@
 
 import argparse
-import matplotlib.pyplot as plt
-import cv2
+
+
 import json
 import numpy as np
 import os
 import random
 from detectron2.engine import DefaultTrainer, hooks
 from utils.trainer import Trainer
+from utils.rotated_trainer import RotatedTrainer
 from detectron2.config import get_cfg
 from detectron2.utils.visualizer import ColorMode
 from detectron2.engine import DefaultPredictor
 from detectron2.utils.visualizer import Visualizer
-from detectron2.data import DatasetCatalog, MetadataCatalog
+from detectron2.data import DatasetCatalog, MetadataCatalog, build_detection_test_loader, build_detection_train_loader
 from detectron2.structures import BoxMode
+from detectron2.evaluation import (
+    COCOEvaluator,
+    RotatedCOCOEvaluator)
 
 
 # init params
@@ -28,10 +32,6 @@ parser.add_argument("--root_folder", help="root folder with radiate dataset",
 
 parser.add_argument("--max_iter", help="Maximum number of iterations",
                     default=90000,
-                    type=int)
-
-parser.add_argument("--eval_every_n_iter", help="Evaluate every N iterations",
-                    default=2500,
                     type=int)
 
 parser.add_argument("--resume", help="Whether to resume training or not",
@@ -49,10 +49,9 @@ root_dir = args.root_folder
 resume = args.resume
 dataset_mode = args.dataset_mode
 max_iter = args.max_iter
-eval_every_n_iter = args.eval_every_n_iter
 
 
-def train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter):
+def train(model_name, root_dir, dataset_mode, max_iter):
 
     # output folder to save models
     output_dir = os.path.join('train_results', model_name + '_' + dataset_mode)
@@ -60,7 +59,7 @@ def train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter):
 
     # get folders depending on dataset_mode
     folders_train = []
-    folders_valid = []
+    folders_test = []
     for curr_dir in os.listdir(root_dir):
         with open(os.path.join(root_dir, curr_dir, 'meta.json')) as f:
             meta = json.load(f)
@@ -69,7 +68,7 @@ def train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter):
         elif meta["set"] == "train_good_and_bad_weather" and dataset_mode == "good_and_bad_weather":
             folders_train.append(curr_dir)
         elif meta["set"] == "test":
-            folders_valid.append(curr_dir)
+            folders_test.append(curr_dir)
 
     def gen_boundingbox(bbox, angle):
         theta = np.deg2rad(-angle)
@@ -159,26 +158,22 @@ def train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter):
         return dataset_dicts
 
     dataset_train_name = dataset_mode + '_train'
-    dataset_valid_name = dataset_mode + '_valid'
+    dataset_test_name = dataset_mode + '_test'
 
     DatasetCatalog.register(dataset_train_name,
                             lambda: get_radar_dicts(folders_train))
     MetadataCatalog.get(dataset_train_name).set(thing_classes=["vehicle"])
-    MetadataCatalog.get(dataset_train_name).evaluator_type = "coco"
 
-    metadata = MetadataCatalog.get(dataset_train_name)
-
-    DatasetCatalog.register(dataset_valid_name,
-                            lambda: get_radar_dicts(folders_valid))
-    MetadataCatalog.get(dataset_valid_name).set(thing_classes=["vehicle"])
-    MetadataCatalog.get(dataset_valid_name).evaluator_type = "coco"
+    DatasetCatalog.register(dataset_test_name,
+                            lambda: get_radar_dicts(folders_test))
+    MetadataCatalog.get(dataset_test_name).set(thing_classes=["vehicle"])
 
     cfg_file = os.path.join('test', 'config', model_name + '.yaml')
     cfg = get_cfg()
     cfg.OUTPUT_DIR = output_dir
     cfg.merge_from_file(cfg_file)
     cfg.DATASETS.TRAIN = (dataset_train_name,)
-    cfg.DATASETS.TEST = (dataset_valid_name,)
+    cfg.DATASETS.TEST = (dataset_test_name,)
     cfg.DATALOADER.NUM_WORKERS = 2
     cfg.SOLVER.IMS_PER_BATCH = 2
     cfg.SOLVER.STEPS: (25000, 35000)
@@ -190,17 +185,14 @@ def train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter):
     cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]
 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
-    trainer = Trainer(cfg)
-    trainer.register_hooks(
-        [
-            hooks.EvalHook(eval_every_n_iter,
-                           lambda: trainer.evaluate(cfg, trainer.model)),
-        ]
-    )
+    if cfg.MODEL.PROPOSAL_GENERATOR.NAME == "RRPN":
+        trainer = RotatedTrainer(cfg)
+    else:
+        trainer = Trainer(cfg)
 
     trainer.resume_or_load(resume=resume)
     trainer.train()
 
 
 if __name__ == "__main__":
-    train(model_name, root_dir, dataset_mode, eval_every_n_iter, max_iter)
+    train(model_name, root_dir, dataset_mode, max_iter)
