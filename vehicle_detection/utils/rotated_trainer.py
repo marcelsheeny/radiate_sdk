@@ -24,8 +24,6 @@ def transform_instance_annotations(annotation, transforms, image_size, *, keypoi
 
 
 def mapper(dataset_dict):
-    # Implement a mapper, similar to the default DatasetMapper, but with our own customizations
-    # it will be modified by code below
     dataset_dict = copy.deepcopy(dataset_dict)
     image = utils.read_image(dataset_dict["file_name"], format="BGR")
     image, transforms = T.apply_transform_gens([T.Resize((1152, 1152))], image)
