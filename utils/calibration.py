@@ -104,7 +104,7 @@ class Calibration:
     def transform(self, LidarToCamR, LidarToCamT):
         Rx = self.RX(LidarToCamR)
         Ry = self.RY(LidarToCamR)
-        Rz = self.RY(LidarToCamR)
+        Rz = self.RZ(LidarToCamR)
 
         R = np.array([[1, 0, 0],
                       [0, 0, 1],
