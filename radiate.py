@@ -725,6 +725,22 @@ class Sequence:
         ind = np.argmin(np.abs(all_timestamps['time'] - t + time_offset))
         return all_timestamps['frame'][ind], all_timestamps['time'][ind]
 
+    def __timestamp_format(self, raw_timestamp):
+        """
+        function to fix the timestamp
+        """
+        raw_decimal_place_len = len(raw_timestamp.split('.')[-1])
+        if(raw_decimal_place_len < 9):
+            place_diff = 9 - raw_decimal_place_len
+            zero_str = ''
+            for _ in range(place_diff):
+                zero_str = zero_str + '0'
+            formatted_timestamp = raw_timestamp.split(
+                '.')[0] + '.' + zero_str + raw_timestamp.split('.')[1]
+            return float(formatted_timestamp)
+        else:
+            return float(raw_timestamp)
+
     def load_timestamp(self, timestamp_path):
         """load all timestamps from a sensor
 
@@ -733,12 +749,13 @@ class Sequence:
         :return: list of all timestamps
         :rtype: dict
         """
-        genfromtxt = np.genfromtxt(
-            timestamp_path, dtype=(str, int, str, float))
-        timestamps = {'frame': [], 'time': []}
-        for line in genfromtxt:
-            timestamps['frame'].append(line[1])
-            timestamps['time'].append(line[3])
+        with open(timestamp_path, "r") as file:
+            lines = file.readlines()
+            timestamps = {'frame': [], 'time': []}
+            for line in lines:
+                words = line.split()
+                timestamps['frame'].append(int(words[1]))
+                timestamps['time'].append(self.__timestamp_format(words[3]))
         return timestamps
 
     def __get_projected_bbox(self, bb, rotation, cameraMatrix, extrinsic, obj_height=2):
