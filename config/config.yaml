@@ -10,6 +10,7 @@ use_camera_left_rect: False
 use_camera_right_rect: True
 use_radar_polar: False
 use_radar_cartesian: True
+use_radar_cartesian_pc: True
 use_lidar_pc: True
 use_lidar_bev_image: True
 use_proj_lidar_left: False
@@ -25,6 +26,12 @@ interpolate_bboxes: False
 # sensors height for projecting 2d BEV to 3D
 sensors_height: -1.8
 max_range_bbox_camera: 100   # in meters
+
+# cfar params for radar cartesian point cloud
+cfar:
+    num_train_cells: 400
+    num_guard_cells: 20
+    far: 0.12
 
 # params to lidar projected to camera
 lidar_proj:

@@ -7,6 +7,7 @@ import pandas as pd
 import math
 import yaml
 from utils.calibration import Calibration
+from utils.cfar import cfar2d
 
 
 class Sequence:
@@ -219,6 +220,9 @@ class Sequence:
             im_right_path = os.path.join(
                 self.sequence_path, 'zed_right', str_format.format(id_camera) + '.png')
 
+            radar_polar_path = os.path.join(
+                self.sequence_path, 'Navtech_Polar', str_format.format(id_radar) + '.png')
+
             radar_cartesian_path = os.path.join(
                 self.sequence_path, 'Navtech_Cartesian', str_format.format(id_radar) + '.png')
 
@@ -271,6 +275,11 @@ class Sequence:
                                                       color_mode=self.config['lidar_proj']['color_mode'])
                 sensors['proj_lidar_right'] = proj_lidar_right
 
+            if self.config['use_radar_cartesian_pc']:
+                radar_polar = cv2.imread(radar_polar_path, -1)
+                sensors['radar_cartesian_pc'] = self.pol2cart_pc(
+                    radar_polar, self.config['radar_calib']['range_res'])
+
             output['sensors'] = sensors
 
         if (get_annotations):
@@ -307,6 +316,20 @@ class Sequence:
             output['annotations'] = annotations
 
         return output
+
+    def pol2cart_pc(self, polar_im, res):
+        """
+        converts a polar radar image to cartesian point cloud
+        """
+        polar_im_cfar = cfar2d(
+            polar_im, self.config['cfar']['num_train_cells'], self.config['cfar']['num_guard_cells'], self.config['cfar']['far'])
+        indices = polar_im_cfar.nonzero()
+        r = indices[0]*res
+        theta = (indices[1]/polar_im.shape[1])*(2.0*np.pi)-(np.pi/2)
+        x = r*np.cos(theta)
+        y = -r*np.sin(theta)
+        i = polar_im[indices]
+        return np.transpose(np.array([x, y, i]))
 
     def vis_all(self, output, wait_time=1):
         """method to diplay all the sensors/annotations
@@ -390,6 +413,11 @@ class Sequence:
                 if self.config['save_images']:
                     cv2.imwrite(os.path.join(self.output_folder, str(
                         self.current_time), 'overlay_right_bb.png'), overlay_right_bb)
+            if self.config['use_radar_cartesian_pc']:
+                plt.cla()
+                plt.plot(output['sensors']['radar_cartesian_pc'][:, 0],
+                         output['sensors']['radar_cartesian_pc'][:, 1], '*')
+                plt.pause(0.01)
 
         cv2.waitKey(wait_time)
 
