@@ -25,9 +25,9 @@ The results (AP) are computed from the training set which contains both good and
 ### Oriented Bounding Boxes
 | Network        | Download Command           | AP(%)  |
 | ------------- |-------------| -----|
-| `faster_rcnn_resnet50` Trained in good and bad weather      | `wget -O weights/faster_rrcnn_R_50_FPN_3x_good_and_bad_weather_radar.pth hhttps://www.dropbox.com/s/8t7unfgtmkb58vl/model_final.pth?dl=0` | 45.77 |
+| `faster_rcnn_resnet50` Trained in good and bad weather      | `wget -O weights/faster_rrcnn_R_50_FPN_3x_good_and_bad_weather_radar.pth https://www.dropbox.com/s/8t7unfgtmkb58vl/model_final.pth?dl=0` | 45.77 |
 | `faster_rcnn_resnet50` Trained in good weather only      | `wget -O weights/faster_rrcnn_R_50_FPN_3x_good_weather_radar.pth https://www.dropbox.com/s/q8wut4p4c3i2cyx/model_final.pth?dl=0`      |   45.31 |
-| `faster_rcnn_resnet101` Trained in good and bad weather| `wget -O weights/faster_rrcnn_R_101_FPN_3x_good_and_bad_weather_radar.pth hhttps://www.dropbox.com/s/qlcauve5dwbbw83/model_final.pth?dl=0`     |   46.55 |
+| `faster_rcnn_resnet101` Trained in good and bad weather| `wget -O weights/faster_rrcnn_R_101_FPN_3x_good_and_bad_weather_radar.pth https://www.dropbox.com/s/qlcauve5dwbbw83/model_final.pth?dl=0`     |   46.55 |
 |`faster_rcnn_resnet101` Trained in good weather only|`wget -O weights/faster_rrcnn_R_101_FPN_3x_good_weather_radar.pth https://www.dropbox.com/s/g1odz9i2qinv61u/model_final.pth?dl=0`| 45.84|
 
 
