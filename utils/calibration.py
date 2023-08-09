@@ -84,7 +84,7 @@ class Calibration:
         thetaX = np.deg2rad(LidarToCamR[0])
         Rx = np.array([[1, 0, 0],
                        [0, np.cos(thetaX), -np.sin(thetaX)],
-                       [0, np.sin(thetaX), np.cos(thetaX)]]).astype(np.float)
+                       [0, np.sin(thetaX), np.cos(thetaX)]]).astype(np.float32)
         return Rx
 
     def RY(self, LidarToCamR):
@@ -98,7 +98,7 @@ class Calibration:
         thetaZ = np.deg2rad(LidarToCamR[2])
         Rz = np.array([[np.cos(thetaZ), -np.sin(thetaZ), 0],
                        [np.sin(thetaZ), np.cos(thetaZ), 0],
-                       [0, 0, 1]]).astype(np.float)
+                       [0, 0, 1]]).astype(np.float32)
         return Rz
 
     def transform(self, LidarToCamR, LidarToCamT):
@@ -108,7 +108,7 @@ class Calibration:
 
         R = np.array([[1, 0, 0],
                       [0, 0, 1],
-                      [0, -1, 0]]).astype(np.float)
+                      [0, -1, 0]]).astype(np.float32)
         R = np.matmul(R, np.matmul(Rx, np.matmul(Ry, Rz)))
 
         LidarToCam = np.array([[R[0, 0], R[0, 1], R[0, 2], 0.0],
